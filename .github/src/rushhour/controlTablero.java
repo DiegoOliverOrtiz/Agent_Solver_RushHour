@@ -133,9 +133,8 @@ public class controlTablero {
 								cocheEncontrado=true;
 							}
 						}
-						if(!cocheEncontrado) {
+						if(!cocheEncontrado) 
 							resultadoConsulta="El vehículo: "+args[4]+" no existe.";
-						}
 					}
 					else
 						resultadoConsulta="El vehículo: "+args[4]+" no es válido, recuerda que se representan como un solo caracter en mayúsculas.";	
@@ -146,12 +145,17 @@ public class controlTablero {
 				break;
 				
 			case "--what":
-				if(args.length>4)
-					for(int i=0;i<tablero.length;i++) {
-						for(int j=0;j<tablero.length;j++) {
-							
+				resultadoConsulta="Formato de las coordenadas incorrecto, el formato para --what es: --what X,Y donde X e Y son las coordenadas a buscar.\nX e Y deben tener un valor 0 y 5 e ir sin parentesis.";
+				if(args.length>4) {
+					if(args[4].length()>2) {
+						String analizarCoordenadas = args[4];
+						if(Character.isDigit(analizarCoordenadas.charAt(0)) && analizarCoordenadas.charAt(1)==',' && Character.isDigit(analizarCoordenadas.charAt(2))) {
+							int posicionX=Character.getNumericValue(analizarCoordenadas.charAt(0));
+							int posicionY=Character.getNumericValue(analizarCoordenadas.charAt(2));
+							resultadoConsulta=""+tablero[posicionX][posicionY];
 						}
-					}
+					}	
+				}
 				else
 					resultadoConsulta="Número de parametros insuficiente, --what requiere indicar la celda a examinar.";
 				break;
@@ -159,12 +163,16 @@ public class controlTablero {
 			case "--size":
 				if(args.length>4) {
 					if(args[4].length()==1) {
+						boolean cocheEncontrado=false;
 						for(int i=0;i<coches.size();i++) {
 							if(coches.get(i).getNombre()==args[4].toCharArray()[0]) {
 								resultadoConsulta=""+coches.get(i).getCoordenadas().size();
 								i=coches.size()+1;
+								cocheEncontrado=true;
 							}
 						}
+						if(!cocheEncontrado) 
+							resultadoConsulta="El vehículo: "+args[4]+" no existe.";
 					}
 					else
 						resultadoConsulta="El vehículo: "+args[4]+" no es válido, recuerda que se representan como un solo caracter en mayúsculas.";
@@ -174,6 +182,7 @@ public class controlTablero {
 				break;
 				
 			case "--howmany":
+				resultadoConsulta=""+coches.size();
 				break;
 			default:
 				resultadoConsulta="La opción: "+args[3]+" no está reconocida, prueba con: --whereis --what --size --howmany";
