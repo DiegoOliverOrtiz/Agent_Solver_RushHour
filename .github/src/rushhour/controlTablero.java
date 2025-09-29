@@ -117,4 +117,67 @@ public class controlTablero {
 			}
 		}
 	}
+	
+	public String preguntasTablero(String args[]) {
+		String resultadoConsulta="";
+		
+		switch (args[3]) {
+			case "--whereis": 
+				if(args.length>4) {
+					if(args[4].length()==1) {
+						boolean cocheEncontrado=false;
+						for(int i=0;i<coches.size();i++) {
+							if(coches.get(i).getNombre()==args[4].toCharArray()[0]) {
+								resultadoConsulta=coches.get(i).getStringCoordenadas();
+								i=coches.size()+1;
+								cocheEncontrado=true;
+							}
+						}
+						if(!cocheEncontrado) {
+							resultadoConsulta="El vehículo: "+args[4]+" no existe.";
+						}
+					}
+					else
+						resultadoConsulta="El vehículo: "+args[4]+" no es válido, recuerda que se representan como un solo caracter en mayúsculas.";	
+				}
+				else
+					resultadoConsulta="Número de parametros insuficiente, --whereis requiere indicar el vehículo a buscar.";
+				
+				break;
+				
+			case "--what":
+				if(args.length>4)
+					for(int i=0;i<tablero.length;i++) {
+						for(int j=0;j<tablero.length;j++) {
+							
+						}
+					}
+				else
+					resultadoConsulta="Número de parametros insuficiente, --what requiere indicar la celda a examinar.";
+				break;
+				
+			case "--size":
+				if(args.length>4) {
+					if(args[4].length()==1) {
+						for(int i=0;i<coches.size();i++) {
+							if(coches.get(i).getNombre()==args[4].toCharArray()[0]) {
+								resultadoConsulta=""+coches.get(i).getCoordenadas().size();
+								i=coches.size()+1;
+							}
+						}
+					}
+					else
+						resultadoConsulta="El vehículo: "+args[4]+" no es válido, recuerda que se representan como un solo caracter en mayúsculas.";
+				}
+				else
+					resultadoConsulta="Número de parametros insuficiente, --whereis requiere indicar el vehículo a examinar.";
+				break;
+				
+			case "--howmany":
+				break;
+			default:
+				resultadoConsulta="La opción: "+args[3]+" no está reconocida, prueba con: --whereis --what --size --howmany";
+		}
+		return resultadoConsulta;
+	}
 }

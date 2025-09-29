@@ -19,6 +19,18 @@ public class Coche {
 		return coordenadas;
 	}
 	
+	public String getStringCoordenadas() {
+		String coordsToString="";
+		if(coordenadas.size()>0) {
+			for(int i=0;i<coordenadas.size();i++) {
+				coordsToString=coordsToString+"("+coordenadas.get(i)[0]+","+coordenadas.get(i)[1]+")";
+			}
+		}
+		else
+			coordsToString="Sin coordenadas cargadas";
+		return coordsToString;
+	}
+	
 	public boolean getOrientacion() {
 		return orientacion;
 	}
