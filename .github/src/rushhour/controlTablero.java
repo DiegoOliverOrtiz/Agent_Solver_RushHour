@@ -84,7 +84,7 @@ public class controlTablero {
 			}
 		}
 		
-		if (resultado==0) { //Comprobar requisito 7  - ¿Hay vehículos con la misma letra duplicados?
+		if (resultado==0 || resultado==6) { //Comprobar requisito 7  - ¿Hay vehículos con la misma letra duplicados?
 			boolean legal;
 			for(int i=0;i<coches.size();i++) {
 				legal=coches.get(i).definirOrientacion();
@@ -100,7 +100,7 @@ public class controlTablero {
 	
 	public void generarCoches() {
 		ControlVisual control = new ControlVisual(tablero);
-		Color[] listaColores=control.colores();
+		Color[] listaColores=control.generarColores();
 		for(int i=0;i<tablero.length;i++) {
 			for(int j=0;j<tablero[0].length;j++) {
 				if(tablero[i][j]!='o') {
