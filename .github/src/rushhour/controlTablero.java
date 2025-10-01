@@ -1,5 +1,6 @@
 package rushhour;
 
+import java.awt.Color;
 import java.util.*;
 
 public class controlTablero {
@@ -30,7 +31,11 @@ public class controlTablero {
 				System.out.println();
 			}
 		}
+		
 		generarCoches();
+		ControlVisual control = new ControlVisual(tablero);
+		control.mostrarMatriz(coches);
+		
 		if(resultado==0) { //Comrpobar requisito 3 - ¿Está el coche rojo?
 			int resultadoAuxiliar=resultado;
 			resultado = 3;
@@ -94,6 +99,8 @@ public class controlTablero {
 	}
 	
 	public void generarCoches() {
+		ControlVisual control = new ControlVisual(tablero);
+		Color[] listaColores=control.colores();
 		for(int i=0;i<tablero.length;i++) {
 			for(int j=0;j<tablero[0].length;j++) {
 				if(tablero[i][j]!='o') {
@@ -109,7 +116,7 @@ public class controlTablero {
 						}
 					}
 					if(existeCoche==false) {
-						Coche c = new Coche(tablero[i][j]);
+						Coche c = new Coche(tablero[i][j], listaColores[coches.size()]);
 						c.addCoordenada(coordenadas);
 						coches.add(c);
 					}
@@ -178,7 +185,7 @@ public class controlTablero {
 						resultadoConsulta="El vehículo: "+args[4]+" no es válido, recuerda que se representan como un solo caracter en mayúsculas.";
 				}
 				else
-					resultadoConsulta="Número de parametros insuficiente, --whereis requiere indicar el vehículo a examinar.";
+					resultadoConsulta="Número de parametros insuficiente, --size requiere indicar el vehículo a examinar.";
 				break;
 				
 			case "--howmany":

@@ -1,18 +1,31 @@
 package rushhour;
 
 import java.util.ArrayList;
+import java.awt.Color;
 
 public class Coche {
 	private char nombre;
 	private ArrayList<int[]> coordenadas = new ArrayList<>();
 	private boolean orientacion; //false es horizontal y true es vertical
+	private Color col;
 	
-	public Coche(char nombre) {
+	public Coche() {
+	}
+	
+	public Coche(char nombre, Color col) {
 		this.nombre=nombre;
+		if(nombre=='A')
+			this.col=Color.RED;
+		else
+			this.col=col;
 	}
 
 	public char getNombre() {
 		return nombre;
+	}
+	
+	public Color getColor() {
+		return col;
 	}
 	
 	public ArrayList<int[]> getCoordenadas(){
