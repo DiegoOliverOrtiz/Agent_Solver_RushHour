@@ -13,7 +13,7 @@ public class controlTablero {
 	public int crearTablero(String semilla) {
 		int resultado=0;
 		
-		if(semilla.length()<36) //Comprobar requisito 1 - Tamaño de 36 caracteres
+		if(semilla.length()!=36) //Comprobar requisito 1 - Tamaño de 36 caracteres
 			resultado=1;
 		
 		if(resultado==0) { //Comprobar requisito 2 - Solo letras las letras 'A-Z' u 'o'
