@@ -95,6 +95,17 @@ public class controlTablero {
 			}
 		}
 		
+		if (resultado==0) { //Comprobar requisito EXTRA - El vehículo rojo es un coche (longitud 2) 
+			for(int i=0;i<coches.size();i++) {
+				if (coches.get(i).getNombre()=='A') {
+					if(coches.get(i).getCoordenadas().size()>2) {
+							resultado=-1;
+					}
+					i=coches.size()+1;
+				}
+			}
+		}
+		
 		return resultado;
 	}
 	
