@@ -2,7 +2,22 @@ package rushhour;
 
 import java.awt.Color;
 import java.util.*;
-
+/* Descripción: 
+ * 	Clase que gestiona el tablero de juego, lo crea, añade coches y le realiza cuestiones al tablero
+ * 
+ * Atributos: 
+ * 	tablero[][]: guarda el tablero de juego siendo cada casilla un char (letras mayúsculas para un coche, 'o' para un hueco)
+ * 	coches: lista que contiene los coches que se vayan añadiendo al juego
+ * 
+ * Funciones:
+ * 	controlTablero: Constructor
+ * 	crearTablero: Crea el tablero en función de un string que pasamos como parametro (semilla), se aprovecha para hacer la función verify
+ * 	revisando que sea un tablero legal o ilegal, retorna un entero que representa ese estado de validez y en caso de no serlo el error dado
+ * 	generarCoches: crea los coches que habrá en el juego en función de cada letra guardada en el tablero
+ * 	preguntasTablero: realiza las funciones de la consulta question
+ * 
+ * 
+ * */
 public class controlTablero {
 	private char tablero[][]=new char[6][6];
 	private ArrayList<Coche> coches=new ArrayList<>();

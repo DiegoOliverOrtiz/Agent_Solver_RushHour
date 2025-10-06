@@ -51,12 +51,12 @@ public class Coche {
 	//Además de tener un metodo para devolver las coordenadas como valores, también tenemos este método por si es necesario que sea un String
 	public String getStringCoordenadas() {
 		String coordsToString="";
-		if(coordenadas.size()>0) {
+		if(coordenadas.size()>0) { //Si tiene algo en el vector de coordenadas lo devuelve
 			for(int i=0;i<coordenadas.size();i++) {
-				coordsToString=coordsToString+"("+coordenadas.get(i)[0]+","+coordenadas.get(i)[1]+")";
+				coordsToString=coordsToString+"("+coordenadas.get(i)[0]+","+coordenadas.get(i)[1]+")"; //Expande las coordenadas en formato (X,Y)(A,B)
 			}
 		}
-		else
+		else //En caso contrario devuelve un aviso de error
 			coordsToString="Sin coordenadas cargadas";
 		return coordsToString;
 	}
