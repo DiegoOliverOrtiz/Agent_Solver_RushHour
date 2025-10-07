@@ -29,11 +29,7 @@ public class Coche {
 	
 	public Coche(char nombre, Color col) {
 		this.nombre=nombre;
-		//Como el coche A siempre es el rojo y los colores los generamos aleatoriamente le forzamos en el constructor a ser de color rojo
-		if(nombre=='A')
-			this.col=Color.RED;
-		else
-			this.col=col;
+		this.col=col;
 	}
 
 	public char getNombre() {

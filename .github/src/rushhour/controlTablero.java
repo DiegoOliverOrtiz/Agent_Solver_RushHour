@@ -52,12 +52,14 @@ public class controlTablero {
 			}
 		}
 		
-		generarCoches(); //Generamos los coches (se explica más adelante el cómo)
-		ControlVisual control = new ControlVisual(tablero); //Creamos una instancia del control visual
-		control.mostrarMatriz(coches); //Mostramos el tablero para ir viendo errores (o ver si está bien)
 		
 		//Comrpobar requisito 3 - ¿Está el coche rojo?
 		if(resultado==0) { 
+			//Dentro del if para no generar coches ilegales según el requisito 2
+			generarCoches(); //Generamos los coches (se explica más adelante el cómo)
+			ControlVisual control = new ControlVisual(tablero); //Creamos una instancia del control visual
+			control.mostrarMatriz(coches); //Mostramos el tablero para ir viendo errores (o ver si está bien)
+			
 			int resultadoAuxiliar=resultado; //Guardamos nuestro estado actual
 			resultado = 3; //Asumimos que no está el coche rojo
 			for(int i=0;i<coches.size();i++) {
@@ -119,7 +121,7 @@ public class controlTablero {
 			boolean legal;
 			for(int i=0;i<coches.size();i++) { //Primero definimos la orientación de todos ls coches
 				legal=coches.get(i).definirOrientacion();
-				if(!legal) { //Nuestro método nos devuelve si es legal o no, al no serlo sabemos que tenemos un coche ilegal
+				if(!legal&&coches.get(i).getCoordenadas().size()>1) { //Nuestro método nos devuelve si es legal o no, al no serlo sabemos que tenemos un coche ilegal
 					resultado=7;
 					i=coches.size()+1;
 				}
@@ -206,13 +208,15 @@ public class controlTablero {
 				
 				break;
 				
-			case "--what":
+			case "--what": //Opción --what
+				//Como what tiene muchos casos de error muy similares, para simplificar ponemos un mensaje de error como el mensaje de la consulta por defecto
 				resultadoConsulta="Formato de las coordenadas incorrecto, el formato para --what es: --what X,Y donde X e Y son las coordenadas a buscar.\nX e Y deben tener un valor 0 y 5 e ir sin parentesis.";
 				if(args.length>4) {
 					if(args[4].length()>2) {
-						String analizarCoordenadas = args[4];
+						String analizarCoordenadas = args[4]; //Guardamos el parametro las coordenadas para simplificar la búsqueda
+						//Comprobación de que sea un formato de coordenadas validas
 						if(Character.isDigit(analizarCoordenadas.charAt(0)) && analizarCoordenadas.charAt(1)==',' && Character.isDigit(analizarCoordenadas.charAt(2))) {
-							int posicionX=Character.getNumericValue(analizarCoordenadas.charAt(0));
+							int posicionX=Character.getNumericValue(analizarCoordenadas.charAt(0)); //Guardamos las coordenadas para simplificar 
 							int posicionY=Character.getNumericValue(analizarCoordenadas.charAt(2));
 							resultadoConsulta=""+tablero[posicionX][posicionY];
 						}
@@ -222,18 +226,18 @@ public class controlTablero {
 					resultadoConsulta="Número de parametros insuficiente, --what requiere indicar la celda a examinar.";
 				break;
 				
-			case "--size":
+			case "--size": //Opción --size
 				if(args.length>4) {
-					if(args[4].length()==1) {
+					if(args[4].length()==1) { //Tamaño uno pues tenemos que buscar un coche que se representa como una letra en concreto
 						boolean cocheEncontrado=false;
-						for(int i=0;i<coches.size();i++) {
+						for(int i=0;i<coches.size();i++) { //Esto es lo mismo que en cualquiera de los métodos anteriores, recorremos la lista de coches hasta encontrarlo
 							if(coches.get(i).getNombre()==args[4].toCharArray()[0]) {
-								resultadoConsulta=""+coches.get(i).getCoordenadas().size();
+								resultadoConsulta=""+coches.get(i).getCoordenadas().size(); //Guardamos el tamaño si lo encuentra
 								i=coches.size()+1;
 								cocheEncontrado=true;
 							}
 						}
-						if(!cocheEncontrado) 
+						if(!cocheEncontrado) //Haciendo uso de esta variable auxiliar podemos indicar que el coche a buscar no existe
 							resultadoConsulta="El vehículo: "+args[4]+" no existe.";
 					}
 					else
@@ -243,10 +247,10 @@ public class controlTablero {
 					resultadoConsulta="Número de parametros insuficiente, --size requiere indicar el vehículo a examinar.";
 				break;
 				
-			case "--howmany":
-				resultadoConsulta=""+coches.size();
+			case "--howmany": //Opción --howmany
+				resultadoConsulta=""+coches.size(); //Es la más simple, solo hay que devolver el tamaño de nuestra lista de coches
 				break;
-			default:
+			default: //Opción default por si nos introducen algun argumento ilegal
 				resultadoConsulta="La opción: "+args[3]+" no está reconocida, prueba con: --whereis --what --size --howmany";
 		}
 		return resultadoConsulta;

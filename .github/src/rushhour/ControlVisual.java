@@ -39,17 +39,22 @@ public class ControlVisual {
             for (int j = 0; j < tablero[0].length; j++) {
             	String etiqueta=""; //Por defecto asumimos que nohay coche (hueco en blanco así que sin etiqueta y color blanco)
             	Color colorCoche=Color.WHITE;
+            	Color colorFuente=Color.WHITE;
             	for (int k=0;k<coches.size();k++) { //Buscamos si entre todos los coches alguno coincide en nombre con...
             		if(coches.get(k).getNombre()==tablero[i][j]) { //...El de la posición del tablero actual, en caso afirmativo rompemos el bucle y guardamos sus datos
             			etiqueta=etiqueta+coches.get(k).getNombre();
             			colorCoche=coches.get(k).getColor();
+            			if(coches.get(k).getNombre()=='A') {
+            				colorFuente=Color.BLACK;
+            				colorCoche=Color.RED;
+            			}
             			k=coches.size()+1;
             		}
             	}
                 JLabel celda = new JLabel(etiqueta, SwingConstants.CENTER); //Creamos una etiqueta para representar cada celda de la matriz
                 celda.setOpaque(true); //Lo poenmos opaco para que se vea el color
                 celda.setBackground(colorCoche); //Y ponemos el color de fondo
-                celda.setForeground(Color.WHITE); //El color de la etiqueta siempre a blanco
+                celda.setForeground(colorFuente); //El color de la etiqueta siempre a blanco
                 celda.setFont(new Font("Arial", Font.BOLD, 18)); //La fuente
                 panelCoches.add(celda);   //Por último añadimos la celda creada al panel de los coches 
             }
