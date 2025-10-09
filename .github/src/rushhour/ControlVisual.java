@@ -29,7 +29,7 @@ public class ControlVisual {
 	 * variables el color y nombre de dicho coche. Finaliza guardando el color y etiquetas necesarios para representar esa celda y ya tras
 	 * salir del bucle hace el frame visible
 	 * */
-	public void mostrarMatriz(ArrayList<Coche> coches) { //Le pasamos el listado de todos los coches existentes
+	public void mostrarMatriz(ArrayList<Vehiculo> vehiculos) { //Le pasamos el listado de todos los coches existentes
 		JFrame frame = new JFrame("Tablero de juego."); //Creamos el frame para mostrar el contenido visual
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Indicamos que se saldrá del frame al cerrarlo 
         frame.setSize(800, 600); //Indicamos el tamaño de nuestro frame
@@ -40,15 +40,15 @@ public class ControlVisual {
             	String etiqueta=""; //Por defecto asumimos que nohay coche (hueco en blanco así que sin etiqueta y color blanco)
             	Color colorCoche=Color.WHITE;
             	Color colorFuente=Color.WHITE;
-            	for (int k=0;k<coches.size();k++) { //Buscamos si entre todos los coches alguno coincide en nombre con...
-            		if(coches.get(k).getNombre()==tablero[i][j]) { //...El de la posición del tablero actual, en caso afirmativo rompemos el bucle y guardamos sus datos
-            			etiqueta=etiqueta+coches.get(k).getNombre();
-            			colorCoche=coches.get(k).getColor();
-            			if(coches.get(k).getNombre()=='A') {
+            	for (int k=0;k<vehiculos.size();k++) { //Buscamos si entre todos los coches alguno coincide en nombre con...
+            		if(vehiculos.get(k).getNombre()==tablero[i][j]) { //...El de la posición del tablero actual, en caso afirmativo rompemos el bucle y guardamos sus datos
+            			etiqueta=etiqueta+vehiculos.get(k).getNombre();
+            			colorCoche=vehiculos.get(k).getColor();
+            			if(vehiculos.get(k).getNombre()=='A') { //condiciones especificas para el coche rojo
             				colorFuente=Color.BLACK;
             				colorCoche=Color.RED;
             			}
-            			k=coches.size()+1;
+            			k=vehiculos.size()+1;
             		}
             	}
                 JLabel celda = new JLabel(etiqueta, SwingConstants.CENTER); //Creamos una etiqueta para representar cada celda de la matriz

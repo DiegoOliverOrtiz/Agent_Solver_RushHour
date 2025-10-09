@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.awt.Color;
 
 /* Descripción: 
- * 	La clase coche se encarga de gestionar los vehículos del tablero
+ * 	La clase vehiculo se encarga de gestionar los vehículos del tablero independientemente de si es un coche o un camión
  * 
  * Atributos: 
  * 	nombre: letra que lo representa
@@ -18,16 +18,16 @@ import java.awt.Color;
  * 	Definir orientacion: función que determina si la posición del objeto es legal (no esté duplicado) y define si está vertical u horizontal
  * 
  * */
-public class Coche {
+public class Vehiculo {
 	private char nombre;
 	private ArrayList<int[]> coordenadas = new ArrayList<>();
 	private boolean orientacion; //false es horizontal y true es vertical
 	private Color col;
 	
-	public Coche() {
+	public Vehiculo() {
 	}
 	
-	public Coche(char nombre, Color col) {
+	public Vehiculo(char nombre, Color col) {
 		this.nombre=nombre;
 		this.col=col;
 	}
