@@ -251,7 +251,16 @@ public class controlTablero {
 				resultadoConsulta=""+coches.size(); //Es la más simple, solo hay que devolver el tamaño de nuestra lista de coches
 				break;
 			case "--goal":
-				//Test de rama
+				resultadoConsulta="FALSE";
+				for(int i=0;i<coches.size();i++) {
+					if (coches.get(i).getNombre()=='A') {
+						ArrayList<int[]> coordenadas=coches.get(i).getCoordenadas();
+						if(coordenadas.get(0)[0]==2&&coordenadas.get(0)[1]==5||coordenadas.get(1)[0]==2&&coordenadas.get(1)[1]==5)
+							resultadoConsulta="TRUE";
+					}
+				}
+				break;
+			case "--move":
 				break;
 			default: //Opción default por si nos introducen algun argumento ilegal
 				resultadoConsulta="La opción: "+args[3]+" no está reconocida, prueba con: --whereis --what --size --howmany";
