@@ -250,6 +250,9 @@ public class controlTablero {
 			case "--howmany": //Opción --howmany
 				resultadoConsulta=""+coches.size(); //Es la más simple, solo hay que devolver el tamaño de nuestra lista de coches
 				break;
+			case "--goal":
+				//Test de rama
+				break;
 			default: //Opción default por si nos introducen algun argumento ilegal
 				resultadoConsulta="La opción: "+args[3]+" no está reconocida, prueba con: --whereis --what --size --howmany";
 		}
