@@ -103,4 +103,39 @@ public class Vehiculo {
 		}
 		return legal;
 	}
+	
+	public boolean mover(int movimiento) {
+		boolean legal=true;
+		ArrayList<int[]> coordenadasTemporales = new ArrayList<>();
+		
+		if(orientacion==false) { //Horizontal
+			for(int i=0;i<coordenadas.size();i++) {
+				if((coordenadas.get(i)[1]+movimiento)<=5&&(coordenadas.get(i)[0]+movimiento)>=0) {
+					int[] nuevasCoords = coordenadas.get(i);
+					nuevasCoords[1]=coordenadas.get(i)[1]+movimiento;
+					coordenadasTemporales.add(nuevasCoords);
+				}
+				else {
+					legal=false;
+				}
+			}
+			if(legal)
+				coordenadas=coordenadasTemporales;
+		}
+		else if (orientacion==true){ //Vertical
+			for(int i=0;i<coordenadas.size();i++) {
+				if((coordenadas.get(i)[0]+movimiento)<5&&(coordenadas.get(i)[0]+movimiento)>=0) {
+					int[] nuevasCoords = coordenadas.get(i);
+					nuevasCoords[1]=coordenadas.get(i)[0]+movimiento;
+					coordenadasTemporales.add(nuevasCoords);
+				}
+				else {
+					legal=false;
+				}
+			}
+			if(legal)
+				coordenadas=coordenadasTemporales;
+		}
+		return legal;
+	}
 }

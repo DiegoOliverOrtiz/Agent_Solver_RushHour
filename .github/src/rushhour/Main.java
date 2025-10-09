@@ -11,7 +11,7 @@ public class Main {
 	public static void main(String[] args) {
 		//Comprobación de argumentos (empiezan después del rushhour.jar)
 		if(args.length>=2) { //Por ahora todos nuestros comandos han de tener al menos dos parametros siendo: <comando> y -s
-			controlTablero tablero = new controlTablero(); //Creamos una instancia de la clase controlTablero sobre la que trabajar
+			ControlTablero tablero = new ControlTablero(); //Creamos una instancia de la clase controlTablero sobre la que trabajar
 			if(args[0].equals("verify")&&args[1].equals("-s")&&args.length>2) { //Primero comprobamos si nos han metido el comando verify
 				int verify=tablero.crearTablero(args[2]); //Si tiene verigy -s <parametro> ya comprueba el resto en la función de crearTablero
 				if(verify!=-1) //Si da un retorno que no sea el -1 muestra los errores pedidos en el campus
