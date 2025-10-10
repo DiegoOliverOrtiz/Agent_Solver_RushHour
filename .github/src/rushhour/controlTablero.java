@@ -64,11 +64,8 @@ public class ControlTablero {
 			
 			int resultadoAuxiliar=resultado; //Guardamos nuestro estado actual
 			resultado = 3; //Asumimos que no está el coche rojo
-			for(int i=0;i<vehiculos.size();i++) {
-				if (vehiculos.get(i).getNombre()=='A') {
-					resultado=resultadoAuxiliar; //Lo buscamos entre la lista de coches y si está recuperamos nuestro estado de resultado previo
-					i=vehiculos.size()+1; //Salimos del bucle para eficienciar el programa (se hace más veces más adelante)
-				}
+			if (buscarVehiculo('A')>-1) { //Recordemos que -1 es que no ha encontrado el vehículo
+				resultado=resultadoAuxiliar; //Lo buscamos entre la lista de coches y si está recuperamos nuestro estado de resultado previo
 			}
 		}
 		
@@ -76,30 +73,26 @@ public class ControlTablero {
 		if (resultado==0) { 
 			int resultadoAuxiliar=resultado; //Igual que antes guardaremos nuestro estado
 			resultado = 4; //Y asumieremos que el coche rojo no está en la tercera fila
-			for(int i=0;i<vehiculos.size();i++) { //Buscamos el coche rojo entre todos los coches
-				if (vehiculos.get(i).getNombre()=='A') {
-					ArrayList<int[]> coordenadas=vehiculos.get(i).getCoordenadas(); //Obtenemos su lista de coordenadas
-					int[] posicion = coordenadas.get(0); //Cogemos la primera (se puede con cualquier coordenada)
-					int fila=posicion[0]; //Si de verdad está en la tercera fila con comprobarlo en un valor es suficiente (el siguiente punto mira que sea horizontal)
-					if(fila==2) { //Al igual que antes si vemos que está bien se recupera el estado de resultado anterior
-						resultado=resultadoAuxiliar;
-						i=vehiculos.size()+1;
-					}
+			int posicionCocheA=buscarVehiculo('A');
+			if (posicionCocheA>-1) {
+				ArrayList<int[]> coordenadas=vehiculos.get(posicionCocheA).getCoordenadas(); //Obtenemos su lista de coordenadas
+				int[] posicion = coordenadas.get(0); //Cogemos la primera (se puede con cualquier coordenada)
+				int fila=posicion[0]; //Si de verdad está en la tercera fila con comprobarlo en un valor es suficiente (el siguiente punto mira que sea horizontal)
+				if(fila==2) { //Al igual que antes si vemos que está bien se recupera el estado de resultado anterior
+					resultado=resultadoAuxiliar;
 				}
 			}
 		}
 		
 		//Comprobar requisito 5  - ¿Está el coche rojo está horizontal? 
 		if (resultado==0) { 
-			for(int i=0;i<vehiculos.size();i++) {
-				if (vehiculos.get(i).getNombre()=='A') {
-					boolean legal; //Por como hemos hecho nuestro metodo para saber la orientación primero tenemos que ver que sea un coche valido
-					legal=vehiculos.get(i).definirOrientacion(); //Lo guardamos
-					if(legal) { //Esto solo se aplica si es legal, no nos importa si no lo es pues se mira en el requisito 7
-						if(vehiculos.get(i).getOrientacion()) //Obtenemos la orienación por como está definida si es true es vertical
-							resultado=5; //Por tanto guardamos el error
-					}
-					i=vehiculos.size()+1;
+			int posicionCocheA=buscarVehiculo('A');
+			if (posicionCocheA>-1) {
+				boolean legal; //Por como hemos hecho nuestro metodo para saber la orientación primero tenemos que ver que sea un coche valido
+				legal=vehiculos.get(posicionCocheA).definirOrientacion(); //Lo guardamos
+				if(legal) { //Esto solo se aplica si es legal, no nos importa si no lo es pues se mira en el requisito 7
+					if(vehiculos.get(posicionCocheA).getOrientacion()) //Obtenemos la orienación por como está definida si es true es vertical
+						resultado=5; //Por tanto guardamos el error
 				}
 			}
 		}
@@ -132,12 +125,10 @@ public class ControlTablero {
 		
 		//Comprobar requisito EXTRA - El vehículo rojo es un coche (longitud 2) 
 		if (resultado==0) { 
-			for(int i=0;i<vehiculos.size();i++) {
-				if (vehiculos.get(i).getNombre()=='A') {
-					if(vehiculos.get(i).getCoordenadas().size()>2) { 
-							resultado=-1; //Devolvemos un error especial al no estar indicado como acutar en el campues (en el main no se representa así)
-					}
-					i=vehiculos.size()+1;
+			int posicionCocheA=buscarVehiculo('A');
+			if (posicionCocheA>-1) {
+				if(vehiculos.get(posicionCocheA).getCoordenadas().size()>2) { 
+						resultado=-1; //Devolvemos un error especial al no estar indicado como acutar en el campues (en el main no se representa así)
 				}
 			}
 		}
@@ -191,15 +182,10 @@ public class ControlTablero {
 			case "--whereis": //Opción --whereis
 				if(args.length>4) { //Whereis requiere indicar el coche a buscar así que ha de haber 5 parametros por lo menos
 					if(args[4].length()==1) { //Comprobamos que solo nos estén metiendo una letra 
-						boolean cocheEncontrado=false; //Asumimos que no lo hemos encontrado
-						for(int i=0;i<vehiculos.size();i++) { //Recorremos todos los coches
-							if(vehiculos.get(i).getNombre()==args[4].toCharArray()[0]) { //Vemos si coincide con el coche a buscar
-								resultadoConsulta=vehiculos.get(i).getStringCoordenadas(); //Si lo encontramos devuelve el string de las coordenadas 
-								i=vehiculos.size()+1; //Salimos del bucle y marcamos el coche como encontrado
-								cocheEncontrado=true;
-							}
-						}
-						if(!cocheEncontrado) 
+						int posicionVehiculo=buscarVehiculo(args[4].toCharArray()[0]); //Buscamos el vehiculo indicado
+						if (posicionVehiculo>-1)
+								resultadoConsulta=vehiculos.get(posicionVehiculo).getStringCoordenadas(); //Si lo encontramos devuelve el string de las coordenadas 
+					    else if(posicionVehiculo==-1) 
 							resultadoConsulta="El vehículo: "+args[4]+" no existe.";
 					}
 					else
@@ -231,15 +217,10 @@ public class ControlTablero {
 			case "--size": //Opción --size
 				if(args.length>4) {
 					if(args[4].length()==1) { //Tamaño uno pues tenemos que buscar un coche que se representa como una letra en concreto
-						boolean cocheEncontrado=false;
-						for(int i=0;i<vehiculos.size();i++) { //Esto es lo mismo que en cualquiera de los métodos anteriores, recorremos la lista de coches hasta encontrarlo
-							if(vehiculos.get(i).getNombre()==args[4].toCharArray()[0]) {
-								resultadoConsulta=""+vehiculos.get(i).getCoordenadas().size(); //Guardamos el tamaño si lo encuentra
-								i=vehiculos.size()+1;
-								cocheEncontrado=true;
-							}
-						}
-						if(!cocheEncontrado) //Haciendo uso de esta variable auxiliar podemos indicar que el coche a buscar no existe
+						int posicionVehiculo=buscarVehiculo(args[4].toCharArray()[0]);
+						if (posicionVehiculo>-1)
+								resultadoConsulta=""+vehiculos.get(posicionVehiculo).getCoordenadas().size(); //Guardamos el tamaño si lo encuentra
+						else if(posicionVehiculo==-1) //Haciendo uso de esta variable auxiliar podemos indicar que el coche a buscar no existe
 							resultadoConsulta="El vehículo: "+args[4]+" no existe.";
 					}
 					else
@@ -255,12 +236,11 @@ public class ControlTablero {
 				
 			case "--goal":
 				resultadoConsulta="FALSE";
-				for(int i=0;i<vehiculos.size();i++) {
-					if (vehiculos.get(i).getNombre()=='A') {
-						ArrayList<int[]> coordenadas=vehiculos.get(i).getCoordenadas();
-						if(coordenadas.get(0)[0]==2&&coordenadas.get(0)[1]==5||coordenadas.get(1)[0]==2&&coordenadas.get(1)[1]==5)
-							resultadoConsulta="TRUE";
-					}
+				int posicionCocheA=buscarVehiculo('A');
+				if (posicionCocheA>-1) {
+					ArrayList<int[]> coordenadas=vehiculos.get(posicionCocheA).getCoordenadas();
+					if(coordenadas.get(0)[0]==2&&coordenadas.get(0)[1]==5||coordenadas.get(1)[0]==2&&coordenadas.get(1)[1]==5)
+						resultadoConsulta="TRUE";
 				}
 				break;
 			case "--move":
@@ -269,16 +249,14 @@ public class ControlTablero {
 					for(int i=0;i<cadenaMovimientos.length;i++) {
 						if(cadenaMovimientos[i].length()==3) {
 							char vehiculoMover=cadenaMovimientos[i].charAt(0);
-							boolean cocheEncontrado=false;
-							for(int j=0;j<vehiculos.size();j++) { //Esto es lo mismo que en cualquiera de los métodos anteriores, recorremos la lista de coches hasta encontrarlo
-								if(vehiculos.get(j).getNombre()==vehiculoMover) {
-									cocheEncontrado=true;
+							int posicionVehiculo=buscarVehiculo(vehiculoMover); //Esto es lo mismo que en cualquiera de los métodos anteriores, recorremos la lista de coches hasta encontrarlo
+								if(posicionVehiculo>-1) {
 									String movimientoString=cadenaMovimientos[i].charAt(1)+""+cadenaMovimientos[i].charAt(2);
 									try {
 										int movimiento=Integer.parseInt(movimientoString);
-										boolean comprobarMovimiento = vehiculos.get(j).mover(movimiento);
+										boolean comprobarMovimiento = vehiculos.get(posicionVehiculo).mover(movimiento);
 										if(comprobarMovimiento)
-											resultadoConsulta=vehiculos.get(j).getStringCoordenadas();
+											resultadoConsulta=vehiculos.get(posicionVehiculo).getStringCoordenadas();
 										else
 											resultadoConsulta="Movimiento ilegal, el coche saldría de los límites del tablero: [0 a 5]";
 									}
@@ -286,11 +264,10 @@ public class ControlTablero {
 										resultadoConsulta="El formato del movimiento: "+movimientoString+" no es válido de ser: A~X, donde A es el coche a mover, ~ el simbolo (+ -) y X las posiciones a mover.";
 									}
 								}
-							}
-							if(!cocheEncontrado) {
-								resultadoConsulta="El vehículo: "+vehiculoMover+" no existe.";
-								i=cadenaMovimientos.length+1;
-							}
+								else if(posicionVehiculo==-1) {
+									resultadoConsulta="El vehículo: "+vehiculoMover+" no existe.";
+									i=cadenaMovimientos.length+1;
+								}
 						}
 						else {
 							resultadoConsulta="El formato de: "+cadenaMovimientos[4]+ " es incorrecto debe ser: A~X, donde A es el coche a mover, ~ el simbolo (+ -) y X las posiciones a mover.";
@@ -306,5 +283,17 @@ public class ControlTablero {
 				resultadoConsulta="La opción: "+args[3]+" no está reconocida, prueba con: --whereis --what --size --howmany";
 		}
 		return resultadoConsulta;
+	}
+	
+	//Metodo para simplificar la búsqueda de vehículos (se repite mucho a lo largo del código)
+	public int buscarVehiculo(char vehiculoBuscar) {
+		int encontrado=-1; //Devuelve -1 si no lo encuentra
+		for(int i=0;i<vehiculos.size();i++) { //Esto es lo mismo que en cualquiera de los métodos anteriores, recorremos la lista de coches hasta encontrarlo
+			if(vehiculos.get(i).getNombre()==vehiculoBuscar	) {
+				encontrado=i; //Devuelve la posición del vehículo en la lista de vehículos
+				i=vehiculos.size(); //Salimos del bucle para eficienciar la ejecución
+			}
+		}
+		return encontrado;
 	}
 }
