@@ -30,6 +30,14 @@ public class Tablero {
 	public void setSemilla(String semilla) {
 		this.semilla = semilla;
 	}
+	public void setSemillaConMatriz() {
+		semilla="";
+		for(int i=0;i<matriz.length;i++) {
+			for(int j=0;j<matriz[0].length;j++) {
+				semilla=semilla+matriz[i][j];
+			}
+		}
+	}
 	public char[][] getMatriz() {
 		return matriz;
 	}
@@ -43,7 +51,7 @@ public class Tablero {
 		int cuenta=0;
 		for(int i=0;i<matriz.length;i++) {
 			for(int j=0;j<matriz[0].length;j++) {
-				this.matriz[i][j]=semilla.charAt(cuenta);
+				matriz[i][j]=semilla.charAt(cuenta);
 				cuenta++;
 			}
 		}

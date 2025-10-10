@@ -246,22 +246,38 @@ public class ControlTablero {
 			case "--move":
 				if(args.length>4) {
 					String[] cadenaMovimientos=args[4].split(",");
+					Tablero tableroAux=new Tablero(args[2]);
 					for(int i=0;i<cadenaMovimientos.length;i++) {
 						if(cadenaMovimientos[i].length()==3) {
 							char vehiculoMover=cadenaMovimientos[i].charAt(0);
 							int posicionVehiculo=buscarVehiculo(vehiculoMover); //Esto es lo mismo que en cualquiera de los métodos anteriores, recorremos la lista de coches hasta encontrarlo
 								if(posicionVehiculo>-1) {
+									ArrayList<int[]> coordenadasOriginales=vehiculos.get(posicionVehiculo).getCoordenadas();
+									/////IMPORTANTE booramos el vehiculo a mover
+									for(int j=0;j<coordenadasOriginales.size();j++) {
+										int[] tuplaCoordsOriginales=coordenadasOriginales.get(j);
+										tableroAux.setValorMatriz(tuplaCoordsOriginales[0], tuplaCoordsOriginales[1], 'o'); //Eliminamos el vehículo
+									}
 									String movimientoString=cadenaMovimientos[i].charAt(1)+""+cadenaMovimientos[i].charAt(2);
 									try {
 										int movimiento=Integer.parseInt(movimientoString);
-										boolean comprobarMovimiento = vehiculos.get(posicionVehiculo).mover(movimiento);
-										if(comprobarMovimiento)
-											resultadoConsulta=vehiculos.get(posicionVehiculo).getStringCoordenadas();
+										boolean comprobarMovimiento = vehiculos.get(posicionVehiculo).mover(movimiento, tableroAux);
+										if(comprobarMovimiento) {
+											ArrayList<int[]> coordenadasNuevas = vehiculos.get(posicionVehiculo).getCoordenadas();
+											for(int j=0;j<coordenadasOriginales.size();j++) {
+												int[] tuplaCoordsNuevas=coordenadasNuevas.get(j);
+												tableroAux.setValorMatriz(tuplaCoordsNuevas[0], tuplaCoordsNuevas[1], vehiculos.get(posicionVehiculo).getNombre());
+											}
+											tableroAux.setSemillaConMatriz();
+											resultadoConsulta=tableroAux.getSemilla();
+											ControlVisual control2 = new ControlVisual(tableroAux.getMatriz()); //Creamos una instancia del control visual
+											control2.mostrarMatriz(vehiculos); //Mostramos el tablero para ir viendo errores (o ver si está bien)
+										}
 										else
-											resultadoConsulta="Movimiento ilegal, el coche saldría de los límites del tablero: [0 a 5]";
+											resultadoConsulta="El movimiento nº"+i+":"+cadenaMovimientos[i]+" es ilegal, asegurate que el vehiculo no salga del tablero ni se mueva a una posicion ya ocupada.";
 									}
 									catch (NumberFormatException e) {
-										resultadoConsulta="El formato del movimiento: "+movimientoString+" no es válido de ser: A~X, donde A es el coche a mover, ~ el simbolo (+ -) y X las posiciones a mover.";
+										resultadoConsulta="El movimiento: "+movimientoString+" no es válido de ser: A~X, donde A es el coche a mover, ~ el simbolo (+ -) y X las posiciones a mover.";
 									}
 								}
 								else if(posicionVehiculo==-1) {
@@ -270,7 +286,7 @@ public class ControlTablero {
 								}
 						}
 						else {
-							resultadoConsulta="El formato de: "+cadenaMovimientos[4]+ " es incorrecto debe ser: A~X, donde A es el coche a mover, ~ el simbolo (+ -) y X las posiciones a mover.";
+							resultadoConsulta="El formato de: "+cadenaMovimientos[i]+ " es incorrecto debe ser: A~X, donde A es el coche a mover, ~ el simbolo (+ -) y X las posiciones a mover.";
 							i=cadenaMovimientos.length+1;
 						}
 					}

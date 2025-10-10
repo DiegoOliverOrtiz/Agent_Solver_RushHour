@@ -104,16 +104,19 @@ public class Vehiculo {
 		return legal;
 	}
 	
-	public boolean mover(int movimiento) {
+	public boolean mover(int movimiento, Tablero tableroJuego) {
 		boolean legal=true;
 		ArrayList<int[]> coordenadasTemporales = new ArrayList<>();
 		
 		if(orientacion==false) { //Horizontal
 			for(int i=0;i<coordenadas.size();i++) {
-				if((coordenadas.get(i)[1]+movimiento)<=5&&(coordenadas.get(i)[0]+movimiento)>=0) {
+				if((coordenadas.get(i)[1]+movimiento)<=5&&(coordenadas.get(i)[1]+movimiento)>=0) {
 					int[] nuevasCoords = coordenadas.get(i);
 					nuevasCoords[1]=coordenadas.get(i)[1]+movimiento;
-					coordenadasTemporales.add(nuevasCoords);
+					if(tableroJuego.getValorMatriz(nuevasCoords[0], nuevasCoords[1])=='o')
+						coordenadasTemporales.add(nuevasCoords);
+					else
+						legal=false;
 				}
 				else {
 					legal=false;
@@ -124,10 +127,14 @@ public class Vehiculo {
 		}
 		else if (orientacion==true){ //Vertical
 			for(int i=0;i<coordenadas.size();i++) {
-				if((coordenadas.get(i)[0]+movimiento)<5&&(coordenadas.get(i)[0]+movimiento)>=0) {
+				int invertirMovimiento=movimiento*-1;
+				if((coordenadas.get(i)[0]+invertirMovimiento)<=5&&(coordenadas.get(i)[0]+invertirMovimiento)>=0) {
 					int[] nuevasCoords = coordenadas.get(i);
-					nuevasCoords[1]=coordenadas.get(i)[0]+movimiento;
-					coordenadasTemporales.add(nuevasCoords);
+					nuevasCoords[0]=coordenadas.get(i)[0]+invertirMovimiento;
+					if(tableroJuego.getValorMatriz(nuevasCoords[0], nuevasCoords[1])=='o')
+						coordenadasTemporales.add(nuevasCoords);
+					else
+						legal=false;
 				}
 				else {
 					legal=false;
