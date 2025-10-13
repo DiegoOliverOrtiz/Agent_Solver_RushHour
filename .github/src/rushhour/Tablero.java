@@ -1,11 +1,15 @@
 package rushhour;
 
+import java.util.ArrayList;
+
 public class Tablero {
 	private String semilla="";
 	private char matriz[][]=new char[6][6];
+	private ArrayList<String> sucesores = new ArrayList<>();
 	
 	public Tablero() {
 	}
+	
 	public Tablero(String semilla) {
 		this.semilla=semilla;
 		int cuenta=0;
@@ -16,6 +20,7 @@ public class Tablero {
 			}
 		}
 	}
+	
 	public Tablero(char matriz[][]) {
 		this.matriz=matriz;
 		for(int i=0;i<matriz.length;i++) {
@@ -58,5 +63,29 @@ public class Tablero {
 	}
 	public void setValorMatriz(int x, int y, char nuevoValor) {
 		this.matriz[x][y]=nuevoValor;
+	}
+	
+	public ArrayList<String> getSucesores(){
+		return sucesores;
+	}
+	
+	public String getSucesoresJuntos() {
+		String retorno="";
+		if(sucesores.size()<1)
+			retorno="No hay sucesores para este tablero";
+		else {
+			for(int i=0;i<sucesores.size();i++) {
+				retorno=retorno+sucesores.get(i)+"\n";
+			}
+		}
+		return retorno;
+	}
+	
+	public void setSucesores(ArrayList<String> sucesores) {
+		this.sucesores=sucesores;
+	}
+	
+	public void addSucesor(String nuevoSucesor) {
+		sucesores.add(nuevoSucesor);
 	}
 }

@@ -20,7 +20,6 @@ import java.util.*;
 
 public class ControlTablero {
 	private Tablero tableroOriginal= new Tablero();
-	private ArrayList<Tablero> tablerosGenerados=new ArrayList<>();
 	private ArrayList<Vehiculo> vehiculos=new ArrayList<>();
 	
 	public ControlTablero() {
@@ -31,7 +30,7 @@ public class ControlTablero {
 	 * de ir de requisito en requisito de error de uno en uno entrando a comprobar si y solo si no se ha generado antes otro error
 	 * 
 	 * */
-	public int crearTablero(String semilla) {
+	public int verificarTablero(String semilla) {
 		int resultado=0; //Asumimos que la cadena es válida e iremos comprobando de uno en uno los posibles errores
 		
 		//Comprobar requisito 1 - Tamaño de 36 caracteres
@@ -311,5 +310,10 @@ public class ControlTablero {
 			}
 		}
 		return encontrado;
+	}
+	
+	public String sucesoresTablero() {
+		String resultadoConsulta="";
+		return resultadoConsulta;
 	}
 }
