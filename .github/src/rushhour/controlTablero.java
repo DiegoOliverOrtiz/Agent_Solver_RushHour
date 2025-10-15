@@ -1,6 +1,5 @@
 package rushhour;
 
-import java.awt.Color;
 import java.util.*;
 /* Descripción: 
  * 	Clase que gestiona el tablero de juego, lo crea, añade coches y le realiza cuestiones al tablero
@@ -20,7 +19,6 @@ import java.util.*;
 
 public class ControlTablero {
 	private Tablero tableroOriginal= new Tablero();
-	private ArrayList<Vehiculo> vehiculos=new ArrayList<>();
 	
 	public ControlTablero() {
 	}
@@ -57,9 +55,9 @@ public class ControlTablero {
 		//Comrpobar requisito 3 - ¿Está el coche rojo?
 		if(resultado==0) { 
 			//Dentro del if para no generar coches ilegales según el requisito 2
-			generarVehiculos(); //Generamos los coches (se explica más adelante el cómo)
+			tableroOriginal.generarVehiculos(); //Generamos los coches (se explica más adelante el cómo)
 			ControlVisual control = new ControlVisual(tableroOriginal.getMatriz()); //Creamos una instancia del control visual
-			control.mostrarMatriz(vehiculos); //Mostramos el tablero para ir viendo errores (o ver si está bien)
+			control.mostrarMatriz(tableroOriginal.getVehiculos()); //Mostramos el tablero para ir viendo errores (o ver si está bien)
 			
 			int resultadoAuxiliar=resultado; //Guardamos nuestro estado actual
 			resultado = 3; //Asumimos que no está el coche rojo
@@ -74,7 +72,7 @@ public class ControlTablero {
 			resultado = 4; //Y asumieremos que el coche rojo no está en la tercera fila
 			int posicionCocheA=buscarVehiculo('A');
 			if (posicionCocheA>-1) {
-				ArrayList<int[]> coordenadas=vehiculos.get(posicionCocheA).getCoordenadas(); //Obtenemos su lista de coordenadas
+				ArrayList<int[]> coordenadas=tableroOriginal.getVehiculos().get(posicionCocheA).getCoordenadas(); //Obtenemos su lista de coordenadas
 				int[] posicion = coordenadas.get(0); //Cogemos la primera (se puede con cualquier coordenada)
 				int fila=posicion[0]; //Si de verdad está en la tercera fila con comprobarlo en un valor es suficiente (el siguiente punto mira que sea horizontal)
 				if(fila==2) { //Al igual que antes si vemos que está bien se recupera el estado de resultado anterior
@@ -88,9 +86,9 @@ public class ControlTablero {
 			int posicionCocheA=buscarVehiculo('A');
 			if (posicionCocheA>-1) {
 				boolean legal; //Por como hemos hecho nuestro metodo para saber la orientación primero tenemos que ver que sea un coche valido
-				legal=vehiculos.get(posicionCocheA).definirOrientacion(); //Lo guardamos
+				legal=tableroOriginal.getVehiculos().get(posicionCocheA).definirOrientacion(); //Lo guardamos
 				if(legal) { //Esto solo se aplica si es legal, no nos importa si no lo es pues se mira en el requisito 7
-					if(vehiculos.get(posicionCocheA).getOrientacion()) //Obtenemos la orienación por como está definida si es true es vertical
+					if(tableroOriginal.getVehiculos().get(posicionCocheA).getOrientacion()) //Obtenemos la orienación por como está definida si es true es vertical
 						resultado=5; //Por tanto guardamos el error
 				}
 			}
@@ -100,8 +98,8 @@ public class ControlTablero {
 			/*Simplemente recorremos toda la lista de coche y como el tamaño de la lista de coordenadas de cada coche
 			 * guarda una coordenada X,Y sabemos que cada elemento de la lista es una posición del coche, por lo tanto 
 			 * si el tamaño de la lista es el tamaño del coche*/
-			for(int i=0;i<vehiculos.size();i++) { 
-				if(vehiculos.get(i).getCoordenadas().size()>3 || vehiculos.get(i).getCoordenadas().size()<2) //Vemos que no sea menor a 2 o mayor a 3
+			for(int i=0;i<tableroOriginal.getVehiculos().size();i++) { 
+				if(tableroOriginal.getVehiculos().get(i).getCoordenadas().size()>3 || tableroOriginal.getVehiculos().get(i).getCoordenadas().size()<2) //Vemos que no sea menor a 2 o mayor a 3
 					resultado=6;
 			}
 		}
@@ -113,11 +111,11 @@ public class ControlTablero {
 		 */
 		if (resultado==0 || resultado==6) { 
 			boolean legal;
-			for(int i=0;i<vehiculos.size();i++) { //Primero definimos la orientación de todos ls coches
-				legal=vehiculos.get(i).definirOrientacion();
-				if(!legal&&vehiculos.get(i).getCoordenadas().size()>1) { //Nuestro método nos devuelve si es legal o no, al no serlo sabemos que tenemos un coche ilegal
+			for(int i=0;i<tableroOriginal.getVehiculos().size();i++) { //Primero definimos la orientación de todos ls coches
+				legal=tableroOriginal.getVehiculos().get(i).definirOrientacion();
+				if(!legal&&tableroOriginal.getVehiculos().get(i).getCoordenadas().size()>1) { //Nuestro método nos devuelve si es legal o no, al no serlo sabemos que tenemos un coche ilegal
 					resultado=7;
-					i=vehiculos.size()+1;
+					i=tableroOriginal.getVehiculos().size()+1;
 				}
 			}
 		}
@@ -126,47 +124,13 @@ public class ControlTablero {
 		if (resultado==0) { 
 			int posicionCocheA=buscarVehiculo('A');
 			if (posicionCocheA>-1) {
-				if(vehiculos.get(posicionCocheA).getCoordenadas().size()>2) { 
+				if(tableroOriginal.getVehiculos().get(posicionCocheA).getCoordenadas().size()>2) { 
 						resultado=-1; //Devolvemos un error especial al no estar indicado como acutar en el campues (en el main no se representa así)
 				}
 			}
 		}
 		
 		return resultado;
-	}
-	
-	/* generarCoches tiene muchas lineas pero es simple
-	 * Recorreremos todo el tablero casilla por casilla
-	 * si vamos una letra que pueda ser un coche (es decir no tenemos 'o')
-	 * vemos si esa letra está asociada ya a algún coche (recorriendo y buscando en toda la lista de coches)
-	 * si esa letra está asociada entonces es una nueva coordenada para el coche (la añadimos)
-	 * si esa letra no lo está entonces creamos un nuevo coche
-	 * */
-	public void generarVehiculos() {
-		ControlVisual control = new ControlVisual(tableroOriginal.getMatriz()); //Creamos un control visual para asignar los colores
-		Color[] listaColores=control.generarColores(); //Cargamos los colores
-		for(int i=0;i<tableroOriginal.getMatriz().length;i++) { //Recorremos todo el tablero
-			for(int j=0;j<tableroOriginal.getMatriz()[0].length;j++) {
-				if(tableroOriginal.getValorMatriz(i, j)!='o') { //Si no es un hueco en blanco entonces
-					int[]coordenadas = {i, j}; //Guardamos las coordenadas actuales en un vector (recordemos que los coches tienen una lista con vectores de coordenadas)
-					boolean existeCoche=false; //Asumimos que no es un nuevo coche
-					for(int k=0;k<vehiculos.size();k++) { //Buscamos entre todos los coches
-						if(vehiculos.get(k) != null){ //En caso de que la lista no esté vacia
-							Vehiculo v = vehiculos.get(k); 
-							if(v.getNombre()==tableroOriginal.getValorMatriz(i, j)) { //Vemos si el coche está ya en el tablero
-								existeCoche=true; //Si lo está así indicamos y añadimos las coordenadas nuevas al coche
-								v.addCoordenada(coordenadas);
-							}
-						}
-					}
-					if(existeCoche==false) { //Si no está el coche pues lo creamos 
-						Vehiculo v = new Vehiculo(tableroOriginal.getValorMatriz(i, j), listaColores[vehiculos.size()]);
-						v.addCoordenada(coordenadas);
-						vehiculos.add(v);
-					}
-				}
-			}
-		}
 	}
 	
 	
@@ -183,7 +147,7 @@ public class ControlTablero {
 					if(args[4].length()==1) { //Comprobamos que solo nos estén metiendo una letra 
 						int posicionVehiculo=buscarVehiculo(args[4].toCharArray()[0]); //Buscamos el vehiculo indicado
 						if (posicionVehiculo>-1)
-								resultadoConsulta=vehiculos.get(posicionVehiculo).getStringCoordenadas(); //Si lo encontramos devuelve el string de las coordenadas 
+								resultadoConsulta=tableroOriginal.getVehiculos().get(posicionVehiculo).getStringCoordenadas(); //Si lo encontramos devuelve el string de las coordenadas 
 					    else if(posicionVehiculo==-1) 
 							resultadoConsulta="El vehículo: "+args[4]+" no existe.";
 					}
@@ -218,7 +182,7 @@ public class ControlTablero {
 					if(args[4].length()==1) { //Tamaño uno pues tenemos que buscar un coche que se representa como una letra en concreto
 						int posicionVehiculo=buscarVehiculo(args[4].toCharArray()[0]);
 						if (posicionVehiculo>-1)
-								resultadoConsulta=""+vehiculos.get(posicionVehiculo).getCoordenadas().size(); //Guardamos el tamaño si lo encuentra
+								resultadoConsulta=""+tableroOriginal.getVehiculos().get(posicionVehiculo).getCoordenadas().size(); //Guardamos el tamaño si lo encuentra
 						else if(posicionVehiculo==-1) //Haciendo uso de esta variable auxiliar podemos indicar que el coche a buscar no existe
 							resultadoConsulta="El vehículo: "+args[4]+" no existe.";
 					}
@@ -230,14 +194,14 @@ public class ControlTablero {
 				break;
 				
 			case "--howmany": //Opción --howmany
-				resultadoConsulta=""+vehiculos.size(); //Es la más simple, solo hay que devolver el tamaño de nuestra lista de coches
+				resultadoConsulta=""+tableroOriginal.getVehiculos().size(); //Es la más simple, solo hay que devolver el tamaño de nuestra lista de coches
 				break;
 				
 			case "--goal":
 				resultadoConsulta="FALSE";
 				int posicionCocheA=buscarVehiculo('A');
 				if (posicionCocheA>-1) {
-					ArrayList<int[]> coordenadas=vehiculos.get(posicionCocheA).getCoordenadas();
+					ArrayList<int[]> coordenadas=tableroOriginal.getVehiculos().get(posicionCocheA).getCoordenadas();
 					if(coordenadas.get(0)[0]==2&&coordenadas.get(0)[1]==5||coordenadas.get(1)[0]==2&&coordenadas.get(1)[1]==5)
 						resultadoConsulta="TRUE";
 				}
@@ -251,7 +215,7 @@ public class ControlTablero {
 							char vehiculoMover=cadenaMovimientos[i].charAt(0);
 							int posicionVehiculo=buscarVehiculo(vehiculoMover); //Esto es lo mismo que en cualquiera de los métodos anteriores, recorremos la lista de coches hasta encontrarlo
 								if(posicionVehiculo>-1) {
-									ArrayList<int[]> coordenadasOriginales=vehiculos.get(posicionVehiculo).getCoordenadas();
+									ArrayList<int[]> coordenadasOriginales=tableroOriginal.getVehiculos().get(posicionVehiculo).getCoordenadas();
 									/////IMPORTANTE booramos el vehiculo a mover
 									for(int j=0;j<coordenadasOriginales.size();j++) {
 										int[] tuplaCoordsOriginales=coordenadasOriginales.get(j);
@@ -260,17 +224,17 @@ public class ControlTablero {
 									String movimientoString=cadenaMovimientos[i].charAt(1)+""+cadenaMovimientos[i].charAt(2);
 									try {
 										int movimiento=Integer.parseInt(movimientoString);
-										boolean comprobarMovimiento = vehiculos.get(posicionVehiculo).mover(movimiento, tableroAux);
+										boolean comprobarMovimiento = tableroOriginal.getVehiculos().get(posicionVehiculo).mover(movimiento, tableroAux);
 										if(comprobarMovimiento) {
-											ArrayList<int[]> coordenadasNuevas = vehiculos.get(posicionVehiculo).getCoordenadas();
+											ArrayList<int[]> coordenadasNuevas = tableroOriginal.getVehiculos().get(posicionVehiculo).getCoordenadas();
 											for(int j=0;j<coordenadasOriginales.size();j++) {
 												int[] tuplaCoordsNuevas=coordenadasNuevas.get(j);
-												tableroAux.setValorMatriz(tuplaCoordsNuevas[0], tuplaCoordsNuevas[1], vehiculos.get(posicionVehiculo).getNombre());
+												tableroAux.setValorMatriz(tuplaCoordsNuevas[0], tuplaCoordsNuevas[1], tableroOriginal.getVehiculos().get(posicionVehiculo).getNombre());
 											}
 											tableroAux.setSemillaConMatriz();
 											resultadoConsulta=tableroAux.getSemilla();
 											ControlVisual control2 = new ControlVisual(tableroAux.getMatriz()); //Creamos una instancia del control visual
-											control2.mostrarMatriz(vehiculos); //Mostramos el tablero para ir viendo errores (o ver si está bien)
+											control2.mostrarMatriz(tableroOriginal.getVehiculos()); //Mostramos el tablero para ir viendo errores (o ver si está bien)
 										}
 										else
 											resultadoConsulta="El movimiento nº"+i+":"+cadenaMovimientos[i]+" es ilegal, asegurate que el vehiculo no salga del tablero ni se mueva a una posicion ya ocupada.";
@@ -295,7 +259,7 @@ public class ControlTablero {
 				break;
 				
 			default: //Opción default por si nos introducen algun argumento ilegal
-				resultadoConsulta="La opción: "+args[3]+" no está reconocida, prueba con: --whereis --what --size --howmany";
+				resultadoConsulta="La opción: "+args[3]+" no está reconocida, prueba con: --whereis --what --size --howmany --goal --move";
 		}
 		return resultadoConsulta;
 	}
@@ -303,10 +267,10 @@ public class ControlTablero {
 	//Metodo para simplificar la búsqueda de vehículos (se repite mucho a lo largo del código)
 	public int buscarVehiculo(char vehiculoBuscar) {
 		int encontrado=-1; //Devuelve -1 si no lo encuentra
-		for(int i=0;i<vehiculos.size();i++) { //Esto es lo mismo que en cualquiera de los métodos anteriores, recorremos la lista de coches hasta encontrarlo
-			if(vehiculos.get(i).getNombre()==vehiculoBuscar	) {
+		for(int i=0;i<tableroOriginal.getVehiculos().size();i++) { //Esto es lo mismo que en cualquiera de los métodos anteriores, recorremos la lista de coches hasta encontrarlo
+			if(tableroOriginal.getVehiculos().get(i).getNombre()==vehiculoBuscar	) {
 				encontrado=i; //Devuelve la posición del vehículo en la lista de vehículos
-				i=vehiculos.size(); //Salimos del bucle para eficienciar la ejecución
+				i=tableroOriginal.getVehiculos().size(); //Salimos del bucle para eficienciar la ejecución
 			}
 		}
 		return encontrado;
@@ -314,6 +278,41 @@ public class ControlTablero {
 	
 	public String sucesoresTablero() {
 		String resultadoConsulta="";
+		for(int i=0;i<tableroOriginal.getVehiculos().size();i++) {
+			for(int j=0;j<tableroOriginal.getMatriz().length;j++) { //Positivos
+				Tablero tableroAux=new Tablero(tableroOriginal.getSemilla());
+				tableroAux.generarVehiculos();
+				String[] cadenaPreguntarMove=new String[5];
+				cadenaPreguntarMove[0]="question";
+				cadenaPreguntarMove[1]="-s";
+				cadenaPreguntarMove[2]=""+tableroOriginal.getSemilla();
+				cadenaPreguntarMove[3]="--move";
+				cadenaPreguntarMove[4]=""+tableroOriginal.getVehiculos().get(i).getNombre()+"+"+j;	
+				if(preguntasTablero(cadenaPreguntarMove).equals("")) {
+					//Añadir sucesor al tablero
+				}
+				else {
+					j=tableroOriginal.getMatriz().length+1;
+				}
+			}
+			for(int j=5;j<=0;j--) { //Negativos
+				Tablero tableroAux=new Tablero(tableroOriginal.getSemilla());
+				tableroAux.generarVehiculos();
+				String[] cadenaPreguntarMove=new String[5];
+				cadenaPreguntarMove[0]="question";
+				cadenaPreguntarMove[1]="-s";
+				cadenaPreguntarMove[2]=""+tableroOriginal.getSemilla();
+				cadenaPreguntarMove[3]="--move";
+				cadenaPreguntarMove[4]=""+tableroOriginal.getVehiculos().get(i).getNombre()+"-"+j;	
+				if(preguntasTablero(cadenaPreguntarMove).equals("")) {
+					//Añadir sucesor al tablero
+				}
+				else {
+					j=tableroOriginal.getMatriz().length+1;
+				}
+			}
+			
+		}
 		return resultadoConsulta;
 	}
 }
