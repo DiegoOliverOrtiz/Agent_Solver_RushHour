@@ -107,7 +107,6 @@ public class Vehiculo {
 	public boolean mover(int movimiento, Tablero tableroJuego) {
 		boolean legal=true;
 		ArrayList<int[]> coordenadasTemporales = new ArrayList<>();
-		
 		if(orientacion==false) { //Horizontal
 			for(int i=0;i<coordenadas.size();i++) {
 				if((coordenadas.get(i)[1]+movimiento)<=5&&(coordenadas.get(i)[1]+movimiento)>=0) {

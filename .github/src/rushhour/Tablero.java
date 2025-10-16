@@ -128,4 +128,10 @@ public class Tablero {
 	public ArrayList<Vehiculo> getVehiculos(){
 		return vehiculos;
 	}
+	
+	public void definirOrientacionVehiculosTablero() {
+		for(int i=0;i<vehiculos.size();i++) { //Primero definimos la orientación de todos los coches
+			vehiculos.get(i).definirOrientacion();
+		}
+	}
 }
