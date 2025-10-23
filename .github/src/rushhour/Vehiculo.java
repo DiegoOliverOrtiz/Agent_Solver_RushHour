@@ -16,6 +16,7 @@ import java.awt.Color;
  * Funciones:
  * 	Constructor, getters y solo setter para las coordenadas (pero solo para añadir no para modificar anteriores)
  * 	Definir orientacion: función que determina si la posición del objeto es legal (no esté duplicado) y define si está vertical u horizontal
+ * 	Mover: actualiza las coordenadas del vehiculo en función de su orientación y del movimiento pasado como parametro
  * 
  * */
 public class Vehiculo {
@@ -104,27 +105,35 @@ public class Vehiculo {
 		return legal;
 	}
 	
+	/* Metodo para actualizar las coordenadas simulando un movimiento, el vehiculo reacciona diferente si es vertical u horizontal
+	 * se comprueba en el primer if, después se encarga de ver si el movimiento es ilegal, al final del método una vez se han
+	 * comprobado todos los movimientos si se mantiene como legal se actualizan las coordenadas.
+	 * Los parametro de entrada son: el movimiento a realizar (+-X) y el tablero sobre el que moverse, recordemos que este tablero 
+	 * viene sin el vehículo a mover para evitar solapamientos, nos aseguramos que siempre sea así porque se invoca desde question --move
+	 * */
 	public boolean mover(int movimiento, Tablero tableroJuego) {
-		boolean legal=true;
-		ArrayList<int[]> coordenadasTemporales = new ArrayList<>();
-		if(orientacion==false) { //Horizontal
-			for(int i=0;i<coordenadas.size();i++) {
-				if((coordenadas.get(i)[1]+movimiento)<=5&&(coordenadas.get(i)[1]+movimiento)>=0) {
-					int[] nuevasCoords = coordenadas.get(i);
-					nuevasCoords[1]=coordenadas.get(i)[1]+movimiento;
-					if(tableroJuego.getValorMatriz(nuevasCoords[0], nuevasCoords[1])=='o')
-						coordenadasTemporales.add(nuevasCoords);
+		boolean legal=true; //Asumimos que el movimiento va a ser legal
+		ArrayList<int[]> coordenadasTemporales = new ArrayList<>(); //Lista para tener de forma temporal las coordenadas actualizadas
+		//Comprobamos si es horizontal o vertical, recordemos false (!orientacion) es horizontal y true (orientacion) es vertical)
+		if(!orientacion) { //Horizontal
+			for(int i=0;i<coordenadas.size();i++) { //Para cada cordenada
+				if((coordenadas.get(i)[1]+movimiento)<=5&&(coordenadas.get(i)[1]+movimiento)>=0) { //Vemos si la nueva posición se sale del tablero
+					int[] nuevasCoords = coordenadas.get(i); //guardamos temporalmente las coordenadas actuales
+					nuevasCoords[1]=coordenadas.get(i)[1]+movimiento; //se aplica el movimiento a [1] porque es horizontal, recordemos que cada coordenada es una tupla X,Y
+					if(tableroJuego.getValorMatriz(nuevasCoords[0], nuevasCoords[1])=='o') //Comprobamos que sea un hueco y no haya coches
+						coordenadasTemporales.add(nuevasCoords); //Si lo es se añaden a las coordenaasTemporales
 					else
-						legal=false;
+						legal=false; //Si colisiona el movimiento es ilegal
 				}
 				else {
-					legal=false;
+					legal=false; //Si se sale es ilegal
 				}
 			}
 			if(legal)
 				coordenadas=coordenadasTemporales;
 		}
-		else if (orientacion==true){ //Vertical
+		//Se hace lo mismo para el movimiento vertical, pero teniendo en cuenta las coordenadas a mover
+		else if (orientacion){ //Vertical
 			for(int i=0;i<coordenadas.size();i++) {
 				int invertirMovimiento=movimiento*-1;
 				if((coordenadas.get(i)[0]+invertirMovimiento)<=5&&(coordenadas.get(i)[0]+invertirMovimiento)>=0) {

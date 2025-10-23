@@ -16,7 +16,7 @@ public class Main {
 			////// VERIFY
 			//////
 			if(args[0].equals("verify")&&args[1].equals("-s")&&args.length>2) { //Primero comprobamos si nos han metido el comando verify
-				int verify=tablero.verificarTablero(args[2]); //Si tiene veriFy -s <parametro> ya comprueba el resto en la función de crearTablero
+				int verify=tablero.verificarTablero(args[2]); //Si tiene verify -s <parametro> ya comprueba el resto en la función de crearTablero
 				if(verify!=-1) //Si da un retorno que no sea el -1 muestra los errores pedidos en el campus
 					System.out.println(verify);
 				else //Si es el error -1 muestra el siguiente mensaje (se hace así porque este error no está indicado en el campus)
@@ -25,13 +25,13 @@ public class Main {
 			//////
 			////// QUESTION
 			//////
-			else if(args[0].equals("question")&&args[1].equals("-s")&&args.length>3) { //Si no es la opción  verify vemos si es question
-				System.out.println(tablero.preguntasTablero(args));
+			else if(args[0].equals("question")&&args[1].equals("-s")&&args.length>3) { //Si no es la opción verify vemos si es question
+				System.out.println(tablero.preguntasTablero(args)); //Lo ejecutamos si lo es
 			}
 			//////
 			////// SUCCESSORS
 			//////
-			else if(args[0].equals("successors")&&args[1].equals("-s")&&args.length>2)
+			else if(args[0].equals("successors")&&args[1].equals("-s")&&args.length>2) //Vemos si es successors y si lo es lo ejecuta
 					System.out.println(tablero.sucesoresTablero(args[2]));
 			//////
 			////// ERRORES

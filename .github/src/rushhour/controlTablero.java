@@ -2,18 +2,15 @@ package rushhour;
 
 import java.util.*;
 /* Descripción: 
- * 	Clase que gestiona el tablero de juego, lo crea, añade coches y le realiza cuestiones al tablero
- * 
- * Atributos: 
- * 	tablero[][]: guarda el tablero de juego siendo cada casilla un char (letras mayúsculas para un coche, 'o' para un hueco)
- * 	coches: lista que contiene los coches que se vayan añadiendo al juego
+ * 	Clase que gestiona un tablero de juego haciendo comprobaciones y preguntas 
  * 
  * Funciones:
  * 	ControlTablero: Constructor
- * 	crearTablero: Crea el tablero en función de un string que pasamos como parametro (semilla), se aprovecha para hacer la función verify
+ * 	verificarTablero: Dada una semilla (tablero en string) revisa si es un tablero válido o no, retornando un número en función de cada situación
  * 	revisando que sea un tablero legal o ilegal, retorna un entero que representa ese estado de validez y en caso de no serlo el error dado
- * 	generarCoches: crea los coches que habrá en el juego en función de cada letra guardada en el tablero
  * 	preguntasTablero: realiza las funciones de la consulta question y retorna su resultado o un mensaje de error en caso de ser incorrecto
+ * 	buscarVehiculo: función auxiliar ya que es necesario en múltiples ocasiones saber donde está un vehiculo
+ * 	sucesoresTablero: se encarga de generar y devolver de los sucesores de un tablero 
  * 
  * */
 
@@ -21,13 +18,12 @@ public class ControlTablero {
 	public ControlTablero() {
 	}
 	
-	/* La función crearTablero es la más densa y larga del programa, en función de una semilla (la cadena de los args por lo general)
+	/* La función verificarTabler en función de una semilla (la cadena de los args por lo general)o una que le pasemos 
 	 * devuelve un valor indicando si esa cadena es apta para usarse o si es invalida, si es el caso devuelve un error. La función se encarga
-	 * de ir de requisito en requisito de error de uno en uno entrando a comprobar si y solo si no se ha generado antes otro error
-	 * 
+	 * de ir de requisito de error en requisito de error entrando a comprobar que se valido si y solo si no se ha generado antes otro error
 	 * */
 	public int verificarTablero(String semilla) {
-		Tablero tableroAux=new Tablero();
+		Tablero tableroAux=new Tablero(); //Usamos un tablero auxiliar para simplicar el método
 		int resultado=0; //Asumimos que la cadena es válida e iremos comprobando de uno en uno los posibles errores
 		
 		//Comprobar requisito 1 - Tamaño de 36 caracteres
@@ -56,9 +52,6 @@ public class ControlTablero {
 		if(resultado==0) { 
 			//Dentro del if para no generar coches ilegales según el requisito 2
 			tableroAux.generarVehiculos(); //Generamos los coches (se explica más adelante el cómo)
-			ControlVisual control = new ControlVisual(tableroAux.getMatriz()); //Creamos una instancia del control visual
-			control.mostrarMatriz(tableroAux.getVehiculos()); //Mostramos el tablero para ir viendo errores (o ver si está bien)
-			
 			int resultadoAuxiliar=resultado; //Guardamos nuestro estado actual
 			resultado = 3; //Asumimos que no está el coche rojo
 			if (buscarVehiculo('A', tableroAux)>-1) { //Recordemos que -1 es que no ha encontrado el vehículo
@@ -140,7 +133,7 @@ public class ControlTablero {
 	 * */
 	public String preguntasTablero(String args[]) { //Pasamos todos los argumentos porque algunas preguntas tienen más o menos
 		String resultadoConsulta=""; //Creamos el string a devolver (lo modificaremos según sea necesario)
-		if(verificarTablero(args[2])==0) {
+		if(verificarTablero(args[2])==0) { //Vemos si es legal la cadena sobre la que trabajar
 		Tablero tableroAux=new Tablero(args[2]);
 		tableroAux.generarVehiculos();
 		tableroAux.definirOrientacionVehiculosTablero();
@@ -235,8 +228,6 @@ public class ControlTablero {
 											}
 											tableroAux.setSemillaConMatriz();
 											resultadoConsulta=tableroAux.getSemilla();
-											ControlVisual control2 = new ControlVisual(tableroAux.getMatriz()); //Creamos una instancia del control visual
-											control2.mostrarMatriz(tableroAux.getVehiculos()); //Mostramos el tablero para ir viendo errores (o ver si está bien)
 										}
 										else
 											resultadoConsulta="El movimiento nº"+i+": "+cadenaMovimientos[i]+" es ilegal, asegurate que el vehiculo no salga del tablero ni se mueva a una posicion ya ocupada.";
@@ -292,7 +283,8 @@ public class ControlTablero {
 			int coste=0;
 			
 			for(int i=0;i<tableroAux.getVehiculos().size();i++) {
-				for(int j=1;j<tableroAux.getMatriz().length;j++) { //Positivos
+				//Solo hasta 4 por las propias dimensiones del tablero
+				for(int j=1;j<4;j++) { //Positivos
 					String[] cadenaPreguntarMove=new String[5];
 					cadenaPreguntarMove[0]="question";
 					cadenaPreguntarMove[1]="-s";
@@ -302,14 +294,14 @@ public class ControlTablero {
 					String resultadoMovimiento=preguntasTablero(cadenaPreguntarMove);
 					if(verificarTablero(resultadoMovimiento)==0) {
 						coste=6-j;
-						cadenaSucesor=""+tableroAux.getVehiculos().get(i).getNombre()+"+"+j+","+resultadoMovimiento+","+coste;
+						cadenaSucesor="["+tableroAux.getVehiculos().get(i).getNombre()+"+"+j+","+resultadoMovimiento+","+coste+"]";
 						tableroAux.addSucesor(cadenaSucesor);
 					}
 					else {
 						j=tableroAux.getMatriz().length+1;
 					}
 				}
-				for(int j=1;j<tableroAux.getMatriz().length;j++) { //Negativos
+				for(int j=1;j<4;j++) { //Negativos
 					String[] cadenaPreguntarMove=new String[5];
 					cadenaPreguntarMove[0]="question";
 					cadenaPreguntarMove[1]="-s";
@@ -319,7 +311,7 @@ public class ControlTablero {
 					String resultadoMovimiento=preguntasTablero(cadenaPreguntarMove);
 					if(verificarTablero(resultadoMovimiento)==0) {
 						coste=6-j;
-						cadenaSucesor=""+tableroAux.getVehiculos().get(i).getNombre()+"-"+j+","+resultadoMovimiento+","+coste;
+						cadenaSucesor="["+tableroAux.getVehiculos().get(i).getNombre()+"-"+j+","+resultadoMovimiento+","+coste+"]";
 						tableroAux.addSucesor(cadenaSucesor);
 					}
 					else {

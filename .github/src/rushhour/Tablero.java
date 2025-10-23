@@ -2,6 +2,7 @@ package rushhour;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Tablero {
 	private String semilla="";
@@ -76,6 +77,7 @@ public class Tablero {
 		if(sucesores.size()<1)
 			retorno="No hay sucesores para este tablero";
 		else {
+			Collections.sort(sucesores);
 			for(int i=0;i<sucesores.size();i++) {
 				retorno=retorno+sucesores.get(i)+"\n";
 			}
