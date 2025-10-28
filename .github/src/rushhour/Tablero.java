@@ -119,8 +119,6 @@ public class Tablero {
 	 * si esa letra no lo está entonces creamos un nuevo coche
 	 * */
 	public void generarVehiculos() {
-		ControlVisual control = new ControlVisual(matriz); //Creamos un control visual para asignar los colores
-		Color[] listaColores=control.generarColores(); //Cargamos los colores
 		for(int i=0;i<matriz.length;i++) { //Recorremos todo el tablero
 			for(int j=0;j<matriz[0].length;j++) {
 				if(matriz[i][j]!='o') { //Si no es un hueco en blanco entonces
@@ -136,7 +134,7 @@ public class Tablero {
 						}
 					}
 					if(existeCoche==false) { //Si no está el coche pues lo creamos 
-						Vehiculo v = new Vehiculo(matriz[i][j], listaColores[vehiculos.size()]);
+						Vehiculo v = new Vehiculo(matriz[i][j]);
 						v.addCoordenada(coordenadas);
 						vehiculos.add(v);
 					}

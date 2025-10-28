@@ -23,23 +23,25 @@ public class Vehiculo {
 	private char nombre;
 	private ArrayList<int[]> coordenadas = new ArrayList<>();
 	private boolean orientacion; //false es horizontal y true es vertical
-	private Color col;
+	private Color colorVehiculo;
 	
 	public Vehiculo() {
 	}
 	
-	public Vehiculo(char nombre, Color col) {
+	public Vehiculo(char nombre) {
 		this.nombre=nombre;
-		this.col=col;
 	}
 
+	public void setColorVehiculo(Color c) {
+		colorVehiculo=c;
+	}
+	public Color getColorVehiculo() {
+		return colorVehiculo;
+	}
 	public char getNombre() {
 		return nombre;
 	}
 	
-	public Color getColor() {
-		return col;
-	}
 	
 	public ArrayList<int[]> getCoordenadas(){
 		return coordenadas;
