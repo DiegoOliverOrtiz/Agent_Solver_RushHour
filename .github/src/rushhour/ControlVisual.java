@@ -3,7 +3,8 @@ package rushhour;
 import java.awt.*;
 import java.util.*;
 import javax.swing.*;
-
+ /* METODO EN DESHUSO ACTUALMENTE, PENDIENTE DE ACTUALIZAR/DESECHAR EN FUNCIÓN DE SI PUEDO O NO PARA LOS SIGUIENTES RETOS */
+ 
 /* Descripción: 
  * 	Clase para ver mediante una GUI el tablero del juego (para depurar)
  * 

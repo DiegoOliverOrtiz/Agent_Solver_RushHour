@@ -9,9 +9,8 @@ import java.util.*;
  * 	verificarTablero: Dada una semilla (tablero en string) revisa si es un tablero válido o no, retornando un número en función de cada situación
  * 	revisando que sea un tablero legal o ilegal, retorna un entero que representa ese estado de validez y en caso de no serlo el error dado
  * 	preguntasTablero: realiza las funciones de la consulta question y retorna su resultado o un mensaje de error en caso de ser incorrecto
- * 	buscarVehiculo: función auxiliar ya que es necesario en múltiples ocasiones saber donde está un vehiculo
+ * 	buscarVehiculo: función auxiliar ya que es necesario en múltiples ocasiones saber donde está un vehiculo y si existe o no
  * 	sucesoresTablero: se encarga de generar y devolver de los sucesores de un tablero 
- * 
  * */
 
 public class ControlTablero {
@@ -193,75 +192,80 @@ public class ControlTablero {
 					resultadoConsulta=""+tableroAux.getVehiculos().size(); //Es la más simple, solo hay que devolver el tamaño de nuestra lista de coches
 					break;
 				
-				case "--goal":
-					resultadoConsulta="FALSE";
+				case "--goal": //Goal es simple, dado un tablero cualquiera, busca las coordenadas del vehiculo rojo 'A' y mira si coincide con las de salida
+					resultadoConsulta="FALSE"; //Asumimos que no coinciden 
 					int posicionCocheA=buscarVehiculo('A', tableroAux);
 					if (posicionCocheA>-1) {
 						ArrayList<int[]> coordenadas=tableroAux.getVehiculos().get(posicionCocheA).getCoordenadas();
 						if(coordenadas.get(0)[0]==2&&coordenadas.get(0)[1]==5||coordenadas.get(1)[0]==2&&coordenadas.get(1)[1]==5)
-							resultadoConsulta="TRUE";
+							resultadoConsulta="TRUE";//Si coincide devolvemos true
 					}
 					break;
+				/* --move puede parecer largo y complejo pero su lógica se resume en realizar ciertas comprobaciones para ver que sea válido
+				 * y vamos de poco a poco realizando comprobaciones hasta alterar las coordenadas
+				 * */
 				case "--move":
 					if(args.length>4) {
-						String[] cadenaMovimientos=args[4].split(",");
-						for(int i=0;i<cadenaMovimientos.length;i++) {
-							if(cadenaMovimientos[i].length()==3) {
-								char vehiculoMover=cadenaMovimientos[i].charAt(0);
-								int posicionVehiculo=buscarVehiculo(vehiculoMover, tableroAux); //Esto es lo mismo que en cualquiera de los métodos anteriores, recorremos la lista de coches hasta encontrarlo
-								if(posicionVehiculo>-1) {
-									ArrayList<int[]> coordenadasOriginales=tableroAux.getVehiculos().get(posicionVehiculo).getCoordenadas();
-									/////IMPORTANTE booramos el vehiculo a mover
-									for(int j=0;j<coordenadasOriginales.size();j++) {
-										int[] tuplaCoordsOriginales=coordenadasOriginales.get(j);
-										tableroAux.setValorMatriz(tuplaCoordsOriginales[0], tuplaCoordsOriginales[1], 'o'); //Eliminamos el vehículo
+						String[] cadenaMovimientos=args[4].split(","); //Primero dado que move puede traer una serie de movimientos los separa para irde uno en uno
+						for(int i=0;i<cadenaMovimientos.length;i++) { //Para cada movimiento detectado
+							if(cadenaMovimientos[i].length()==3) { //Primero vemos que sean 3 caracteres: vehiculo,+/-,numero de casillas a mover
+								char vehiculoMover=cadenaMovimientos[i].charAt(0); //vemos que sea un vehículo (representado por cahr)
+								int posicionVehiculo=buscarVehiculo(vehiculoMover, tableroAux); //Vemos si existe
+								if(posicionVehiculo>-1) { //Si existe seguimos (recordemos que posición vehiculo es la posición en la lista de vehiculos de un tablero, -1 es que no existe)
+									ArrayList<int[]> coordenadasOriginales=tableroAux.getVehiculos().get(posicionVehiculo).getCoordenadas(); //guardamos las coordenadas del vehículo
+									for(int j=0;j<coordenadasOriginales.size();j++) { //Y vamos coordenada a coordenada borrando el vehículo
+										int[] tuplaCoordsOriginales=coordenadasOriginales.get(j); //El fin de esto es luego trabajar sobre este tablero sin que el propio vehículo se solape consigo mismo
+										tableroAux.setValorMatriz(tuplaCoordsOriginales[0], tuplaCoordsOriginales[1], 'o');
 									}
-									String movimientoString=cadenaMovimientos[i].charAt(1)+""+cadenaMovimientos[i].charAt(2);
-									try {
+									String movimientoString=cadenaMovimientos[i].charAt(1)+""+cadenaMovimientos[i].charAt(2); //concatenamos el posible simbolo con el movimiento
+									try { //Intentamos convertir el movimiento a un valor numerico 
 										int movimiento=Integer.parseInt(movimientoString);
-										boolean comprobarMovimiento = tableroAux.getVehiculos().get(posicionVehiculo).mover(movimiento, tableroAux);
-										if(comprobarMovimiento) {
-											ArrayList<int[]> coordenadasNuevas = tableroAux.getVehiculos().get(posicionVehiculo).getCoordenadas();
-											for(int j=0;j<coordenadasOriginales.size();j++) {
+										boolean comprobarMovimiento = tableroAux.getVehiculos().get(posicionVehiculo).mover(movimiento, tableroAux); //Llamamos al metodo del coche para intentar moverlo
+										if(comprobarMovimiento) { //Si se ha movido
+											ArrayList<int[]> coordenadasNuevas = tableroAux.getVehiculos().get(posicionVehiculo).getCoordenadas(); //Cogemos las nuevas coordenadas
+											for(int j=0;j<coordenadasOriginales.size();j++) { //Actualizamos las coordenadas del tablero
 												int[] tuplaCoordsNuevas=coordenadasNuevas.get(j);
 												tableroAux.setValorMatriz(tuplaCoordsNuevas[0], tuplaCoordsNuevas[1], tableroAux.getVehiculos().get(posicionVehiculo).getNombre());
 											}
-											tableroAux.setSemillaConMatriz();
-											resultadoConsulta=tableroAux.getSemilla();
+											tableroAux.setSemillaConMatriz(); //Actualizamos la semilla
+											resultadoConsulta=tableroAux.getSemilla(); //El resultado de la consulta se establece como el de la semilla
 										}
-										else
+										else //Mensaje de error si el movimiento no es legal
 											resultadoConsulta="El movimiento nº"+i+": "+cadenaMovimientos[i]+" es ilegal, asegurate que el vehiculo no salga del tablero ni se mueva a una posicion ya ocupada.";
 									}
-									catch (NumberFormatException e) {
-										resultadoConsulta="El movimiento: "+movimientoString+" no es válido de ser: A~X, donde A es el coche a mover, ~ el simbolo (+ -) y X las posiciones a mover.";
+									catch (NumberFormatException e) { //Mensaje de error si no se puede convertir a un valor numerico el movimiento
+										resultadoConsulta="El movimiento: "+movimientoString+" no es válido de ser: V~X, donde V es el vehículo a mover, ~ el simbolo (+ -) y X las posiciones a mover.";
 									}
 								}
-								else if(posicionVehiculo==-1) {
+								else if(posicionVehiculo==-1) { //Mensaje de error si el vehículo no existe 
 									resultadoConsulta="El vehículo: "+vehiculoMover+" no existe.";
 									i=cadenaMovimientos.length+1;
 								}
 							}
-							else {
-								resultadoConsulta="El formato de: "+cadenaMovimientos[i]+ " es incorrecto debe ser: A~X, donde A es el coche a mover, ~ el simbolo (+ -) y X las posiciones a mover.";
+							else { //Mensaje por si es un formato incorrecto
+								resultadoConsulta="El formato de: "+cadenaMovimientos[i]+ " es incorrecto debe ser: V~X, donde V es el vehículo a mover, ~ el simbolo (+ -) y X las posiciones a mover.";
 								i=cadenaMovimientos.length+1;
 							}
 						}
 					}
-					else
-						resultadoConsulta="La opción --move debe incluir el movimiento a realizar con el formato: A~X, donde A es el coche a mover, ~ el simbolo (+ -) y X las posiciones a mover.";
+					else //Mensaje por si es un formato incorrecto
+						resultadoConsulta="La opción --move debe incluir el movimiento a realizar con el formato: V~X, donde V es el vehículo a mover, ~ el simbolo (+ -) y X las posiciones a mover.";
 					break;
 				
 				default: //Opción default por si nos introducen algun argumento ilegal
 					resultadoConsulta="La opción: "+args[3]+" no está reconocida, prueba con: --whereis --what --size --howmany --goal --move";
 			}
 		}
-		else 
+		else //Si no es una cadena válida 
 			resultadoConsulta="La cadena introducida no es válida, compruebala con el comando: verify -s <cadena>";
 		
 		return resultadoConsulta;
 	}
 	
-	//Metodo para simplificar la búsqueda de vehículos (se repite mucho a lo largo del código)
+	/*Metodo para simplificar la búsqueda de vehículos (se repite mucho a lo largo del código)
+	 * devuelve la posición del vehículo en la lista de vehículos de un tablero, de tal forma que si es cualquier valor excepto -1 
+	 * dicho coche existe y a mayores sabemos que posición ocupa en dicha lista
+	 */
 	public int buscarVehiculo(char vehiculoBuscar, Tablero tableroBuscar) {
 		int encontrado=-1; //Devuelve -1 si no lo encuentra
 		for(int i=0;i<tableroBuscar.getVehiculos().size();i++) { //Esto es lo mismo que en cualquiera de los métodos anteriores, recorremos la lista de coches hasta encontrarlo
@@ -272,35 +276,44 @@ public class ControlTablero {
 		}
 		return encontrado;
 	}
-	
+	/* El metodo sucesoresTablero genera todos los posibles sucesores de un tablero 
+	 * resumiendo toma un tablero, mira si es legal, en caso de serlo genera sus vehículos, les define orientación
+	 * genera una cadena de sucesores vacía y posteriormente toma toda la lista de vehículos de dicho tablero y va de uno en uno
+	 * sumandole hasta +/- 4 posiciones y viendo si son legales, generando así los sucesores
+	 * */
 	public String sucesoresTablero(String semilla) {
-		String resultadoConsulta="Tablero sin sucesores posibles.";
-		if(verificarTablero(semilla)==0) {
-			Tablero tableroAux=new Tablero(semilla);
+		String resultadoConsulta="Tablero sin sucesores posibles."; //De primeras se asigna este mensaje por si es un tablero sin sucesores
+		if(verificarTablero(semilla)==0) { //Vemos si es un tablero legal
+			Tablero tableroAux=new Tablero(semilla); //Creación del tablero, vehículos, cadena de sucesores vacia
 			tableroAux.generarVehiculos();
 			tableroAux.definirOrientacionVehiculosTablero();
 			String cadenaSucesor="";
-			int coste=0;
-			
+			int coste=0; //Decalaramos el coste como variable, luego se usará a lo largo dle método
+			// Recorremos todos los vehículos
 			for(int i=0;i<tableroAux.getVehiculos().size();i++) {
-				//Solo hasta 4 por las propias dimensiones del tablero
+				/*Hacemos un for para las coordenadas positivas, solo llega hasta +4 porque por el propio tamaño del vehículo 4 
+				 es lo máximo que podría sin salirse del tablero (suponiendo un vehículo de tamaño minimo = 2)*/
 				for(int j=1;j<4;j++) { //Positivos
-					String[] cadenaPreguntarMove=new String[5];
-					cadenaPreguntarMove[0]="question";
+					String[] cadenaPreguntarMove=new String[5]; //Generamos un array de strings para invocar a question --move ya que nos sirve
+					cadenaPreguntarMove[0]="question"; //Asignamos los parametros que tendría --move 
 					cadenaPreguntarMove[1]="-s";
 					cadenaPreguntarMove[2]=""+tableroAux.getSemilla();
 					cadenaPreguntarMove[3]="--move";
-					cadenaPreguntarMove[4]=""+tableroAux.getVehiculos().get(i).getNombre()+"+"+j;	
-					String resultadoMovimiento=preguntasTablero(cadenaPreguntarMove);
+					cadenaPreguntarMove[4]=""+tableroAux.getVehiculos().get(i).getNombre()+"+"+j; //Asignamos el movimiento, en este caso positvo
+					String resultadoMovimiento=preguntasTablero(cadenaPreguntarMove); //Realizamos la consulta y guardamos el resultado
+					/*Hacemos un verify del resultado, ¿por qué? Porque question --move nos puede devolver muchos tipos de mensaje en función
+					 * del error, pero sabemos que si se hace el movimiento correctamente devuelve el string con la cadena del tablero 
+					 * actualizada tras el movimiento, por lo tanto si le aplicamos un verify y es válido sabemos que --move ha funcionado*/
 					if(verificarTablero(resultadoMovimiento)==0) {
-						coste=6-j;
+						coste=6-j; //Calculamos el coste del movimiento
 						cadenaSucesor="["+tableroAux.getVehiculos().get(i).getNombre()+"+"+j+","+resultadoMovimiento+","+coste+"]";
-						tableroAux.addSucesor(cadenaSucesor);
+						tableroAux.addSucesor(cadenaSucesor); //Generamos el sucesor con el formato especificado y lo guardamos en el tablero
 					}
-					else {
+					else { //Si el movimiento ha sido ilegal nos salimos del bucle de positivos porque no tiene sentido seguir avanzando ya que sabemos que no se podrá
 						j=tableroAux.getMatriz().length+1;
 					}
 				}
+				//Aplicamos exactamente lo mismo pero para los movimientos negativos
 				for(int j=1;j<4;j++) { //Negativos
 					String[] cadenaPreguntarMove=new String[5];
 					cadenaPreguntarMove[0]="question";
@@ -321,7 +334,7 @@ public class ControlTablero {
 			}
 			resultadoConsulta=tableroAux.getSucesoresJuntos();
 		}
-		else
+		else //Mensaje de error por si la consulta es invalida
 			resultadoConsulta="La cadena introducida no es válida, compruebala con el comando: verify -s <cadena>";
 		return resultadoConsulta;
 	}

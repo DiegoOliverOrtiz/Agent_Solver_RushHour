@@ -122,11 +122,14 @@ public class Vehiculo {
 					nuevasCoords[1]=coordenadas.get(i)[1]+movimiento; //se aplica el movimiento a [1] porque es horizontal, recordemos que cada coordenada es una tupla X,Y
 					if(tableroJuego.getValorMatriz(nuevasCoords[0], nuevasCoords[1])=='o') //Comprobamos que sea un hueco y no haya coches
 						coordenadasTemporales.add(nuevasCoords); //Si lo es se añaden a las coordenaasTemporales
-					else
+					else {
 						legal=false; //Si colisiona el movimiento es ilegal
+						i=coordenadas.size()+1; //Salimos del bucle si es ilegal para optimizar las iteraciones
+					}
 				}
 				else {
 					legal=false; //Si se sale es ilegal
+					i=coordenadas.size()+1; //Salimos del bucle si es ilegal para optimizar las iteraciones
 				}
 			}
 			if(legal)
@@ -141,11 +144,14 @@ public class Vehiculo {
 					nuevasCoords[0]=coordenadas.get(i)[0]+invertirMovimiento;
 					if(tableroJuego.getValorMatriz(nuevasCoords[0], nuevasCoords[1])=='o')
 						coordenadasTemporales.add(nuevasCoords);
-					else
+					else {
 						legal=false;
+						i=coordenadas.size()+1;
+					}
 				}
 				else {
 					legal=false;
+					i=coordenadas.size()+1;
 				}
 			}
 			if(legal)
