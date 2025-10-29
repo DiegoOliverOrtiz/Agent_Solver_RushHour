@@ -44,8 +44,64 @@ public class ControlVisual {
 	 * salir del bucle hace el frame visible
 	 * */
 	
-	public void mostrarTablero(ArrayList<Tablero> tableros, String[] args) {
-		System.out.println(args.length);
+	public void crearVisual(String resultado, String[] args) {
+		ArrayList<Tablero> tableros = new ArrayList<>();
+		boolean dibujable=false;
+		//////
+		////// VERIFY
+		//////
+		if(args[0].equals("verify")) { //Primero comprobamos si nos han metido el comando verify
+			int resultadoInt = Integer.parseInt(resultado);
+			if(resultadoInt>1||resultadoInt==0) {
+				Tablero tableroAux = new Tablero(args[2]);
+				tableroAux.generarVehiculos();
+				tableroAux.definirOrientacionVehiculosTablero();
+				tableros.add(tableroAux);
+				dibujable=true;
+			}
+				
+		}
+		//////
+		////// QUESTION
+		//////
+		else if(args[0].equals("question")) {//Si no es la opción verify vemos si es question
+			if((args[3].equals("--whereis")&&args.length>4)||(args[3].equals("--what")&&args.length>4)||(args[3].equals("--size")&&args.length>4)||args[3].equals("--howmany")||args[3].equals("--goal")) {
+				ControlTablero controlAux = new ControlTablero();
+				int valido=controlAux.verificarTablero(args[2]);
+				if(valido==0) {
+					Tablero tableroAux = new Tablero(args[2]);
+					tableroAux.generarVehiculos();
+					tableroAux.definirOrientacionVehiculosTablero();
+					tableros.add(tableroAux);
+					dibujable=true;
+				}		
+			}
+			else if(args[3].equals("--move")&&args.length>4) {
+				ControlTablero controlAux = new ControlTablero();
+				int validoInput=controlAux.verificarTablero(args[2]);
+				int validoResultado=controlAux.verificarTablero(resultado);
+				if(validoInput==0&&validoResultado==0) {
+					Tablero tableroAux = new Tablero(args[2]);
+					tableroAux.generarVehiculos();
+					tableroAux.definirOrientacionVehiculosTablero();
+					tableros.add(tableroAux);
+					Tablero tableroAux2 = new Tablero(resultado);
+					tableroAux2.generarVehiculos();
+					tableroAux2.definirOrientacionVehiculosTablero();
+					tableros.add(tableroAux2);
+					dibujable=true;
+				}
+			}
+		}
+		//////
+		////// SUCCESSORS
+		//////
+		else if(args[0].equals("successors")&&args[1].equals("-s")&&args.length>2) {} //Vemos si es successors y si lo es lo ejecuta
+		if(dibujable)
+			mostrarTablero(tableros, args);
+	}
+	
+	private void mostrarTablero(ArrayList<Tablero> tableros, String[] args) {
 		JFrame frame = new JFrame("Tablero de juego."); //Creamos el frame para mostrar el contenido visual
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Indicamos que se saldrá del frame al cerrarlo 
         frame.setSize(800, 600); //Indicamos el tamaño de nuestro frame

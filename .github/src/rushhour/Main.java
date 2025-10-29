@@ -22,16 +22,7 @@ public class Main {
 				int verify=tablero.verificarTablero(args[2]); //Si tiene verify -s <parametro> ya comprueba el resto en la función de crearTablero
 				if(verify!=-1) { //Si da un retorno que no sea el -1 muestra los errores pedidos en el campus
 					System.out.println(verify);
-					ArrayList<Tablero> tableros = new ArrayList<>();
-					Tablero tableroAux=new Tablero(args[2]);
-					tableroAux.generarVehiculos();
-					tableroAux.definirOrientacionVehiculosTablero();
-					tableros.add(tableroAux);
-					Tablero tableroAux2=new Tablero("BBJoooHoJDDMHooAAMHoKEEMIoKLFFIGGLoo");
-					tableroAux2.generarVehiculos();
-					tableroAux2.definirOrientacionVehiculosTablero();
-					tableros.add(tableroAux2);
-					visual.mostrarTablero(tableros, args);
+					visual.crearVisual(verify+"", args);
 				}
 				else //Si es el error -1 muestra el siguiente mensaje (se hace así porque este error no está indicado en el campus)
 					System.out.println("Tablero correcto, pero el vehículo rojo (A) no es un coche (longitud 2).");
@@ -40,7 +31,9 @@ public class Main {
 			////// QUESTION
 			//////
 			else if(args[0].equals("question")&&args[1].equals("-s")&&args.length>3) { //Si no es la opción verify vemos si es question
-				System.out.println(tablero.preguntasTablero(args)); //Lo ejecutamos si lo es
+				String resultadoConsulta=tablero.preguntasTablero(args);
+				System.out.println(resultadoConsulta); //Lo ejecutamos si lo es
+				visual.crearVisual(resultadoConsulta, args);
 			}
 			//////
 			////// SUCCESSORS
