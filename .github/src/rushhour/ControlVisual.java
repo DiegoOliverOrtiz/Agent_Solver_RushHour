@@ -94,9 +94,44 @@ public class ControlVisual {
 			}
 		}
 		//////
-		////// SUCCESSORS
+		////// SUCCESSORS Y SOLVER
 		//////
-		else if(args[0].equals("successors")&&args[1].equals("-s")&&args.length>2) {} //Vemos si es successors y si lo es lo ejecuta
+		else if((args[0].equals("successors")&&args[1].equals("-s")&&args.length>2)||(args[0].equals("solver")&&args[1].equals("-s")&&args.length>3)) {
+			String[] separados = resultado.split("\n");
+			Tablero tableroAux = new Tablero(args[2]);
+			tableroAux.generarVehiculos();
+			tableroAux.definirOrientacionVehiculosTablero();
+			tableros.add(tableroAux);
+			for(int i=0;i<separados.length;i++) {
+				separados[i]=separados[i].substring(1, separados[i].length() - 1);
+			}
+			if(args[0].equals("successors")) {
+				for(int i=0;i<separados.length;i++) {
+					String[] sucesoresSeparados=separados[i].split(",");
+					if(sucesoresSeparados.length==3) {
+						Tablero tableroAux2 = new Tablero(sucesoresSeparados[1]);
+						tableroAux2.generarVehiculos();
+						tableroAux2.definirOrientacionVehiculosTablero();
+						tableros.add(tableroAux2);
+						dibujable=true;
+					}
+				}
+			}
+			else if(args[0].equals("solver")) {
+				for(int i=0;i<separados.length;i++) {
+					String[] solverSeparados=separados[i].split(",");
+					if(solverSeparados.length==8) {
+						Tablero tableroAux2 = new Tablero(solverSeparados[3]);
+						tableroAux2.generarVehiculos();
+						tableroAux2.definirOrientacionVehiculosTablero();
+						tableros.add(tableroAux2);
+						dibujable=true;
+					}
+				}
+			}
+			
+		} //Vemos si es successors y si lo es lo ejecuta
+		
 		if(dibujable)
 			mostrarTablero(tableros, args);
 	}

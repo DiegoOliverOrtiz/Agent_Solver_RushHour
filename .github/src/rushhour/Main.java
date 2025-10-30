@@ -38,8 +38,11 @@ public class Main {
 			//////
 			////// SUCCESSORS
 			//////
-			else if(args[0].equals("successors")&&args[1].equals("-s")&&args.length>2) //Vemos si es successors y si lo es lo ejecuta
-					System.out.println(tablero.sucesoresTablero(args[2]));
+			else if(args[0].equals("successors")&&args[1].equals("-s")&&args.length>2) {//Vemos si es successors y si lo es lo ejecuta
+					String resultadoConsulta=tablero.sucesoresTablero(args[2]);
+					System.out.println(resultadoConsulta);
+					visual.crearVisual(resultadoConsulta, args);
+			}
 			//////
 			////// ERRORES
 			//////
