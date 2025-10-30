@@ -2,7 +2,7 @@ package rushhour;
 
 public class Nodo {
 	int id;
-	int padre;
+	String padre;
 	String accion;
 	Tablero estado;
 	int costo;
@@ -10,7 +10,7 @@ public class Nodo {
 	int heuristica;
 	int valor;
 	
-	public Nodo(int id, int padre, String accion, Tablero estado, int costo, int profundidad, int heuristica, int valor) {
+	public Nodo(int id, String padre, String accion, Tablero estado, int costo, int profundidad, int heuristica, int valor) {
 		this.id = id;
 		this.padre = padre;
 		this.accion = accion;
@@ -29,12 +29,17 @@ public class Nodo {
 		this.id = id;
 	}
 
-	public int getPadre() {
+	public String getPadre() {
 		return padre;
 	}
 
-	public void setPadre(int padre) {
+	public void setPadre(String padre) {
 		this.padre = padre;
+	}
+
+	@Override
+	public String toString() {
+		return "["+id + "," + padre + "," + accion + "," + estado.getSemilla() + "," + costo + "," + profundidad + "," + heuristica + "," + valor + "]";
 	}
 
 	public String getAccion() {

@@ -118,7 +118,7 @@ public class ControlVisual {
 				}
 			}
 			else if(args[0].equals("solver")) {
-				for(int i=0;i<separados.length;i++) {
+				for(int i=1;i<separados.length;i++) {
 					String[] solverSeparados=separados[i].split(",");
 					if(solverSeparados.length==8) {
 						Tablero tableroAux2 = new Tablero(solverSeparados[3]);
@@ -223,7 +223,7 @@ public class ControlVisual {
     	for(int i=0;i<nombresVehiculos.length;i++) {
     		for(int j=0;j<vehiculos.size();j++) {
     			if(nombresVehiculos[i]==vehiculos.get(j).getNombre())
-    				vehiculos.get(j).setColorVehiculo(listaColores[18]);
+    				vehiculos.get(j).setColorVehiculo(listaColores[i]);
     		}
     	}
 		for (int i = 0; i < tablero.getMatriz().length; i++) { //Bucle para recorrer la matriz que representa nuestro tablero
