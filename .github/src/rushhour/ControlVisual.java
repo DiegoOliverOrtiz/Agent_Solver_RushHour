@@ -19,7 +19,7 @@ import javax.swing.*;
  * */
 public class ControlVisual {
 	//Al constructor le pasamos solo el tablero de nuestro juego
-	private Color[] listaColores = new Color[16];
+	private Color[] listaColores = new Color[10];
 	int iteracion=0;
 	
 	public ControlVisual() {
@@ -220,8 +220,11 @@ public class ControlVisual {
     		nombresVehiculos[i]=vehiculos.get(i).getNombre();
     	}
     	Arrays.sort(nombresVehiculos);
-    	for(int i=0;i<vehiculos.size();i++) {
-    		vehiculos.get(i).setColorVehiculo(listaColores[i]);
+    	for(int i=0;i<nombresVehiculos.length;i++) {
+    		for(int j=0;j<vehiculos.size();j++) {
+    			if(nombresVehiculos[i]==vehiculos.get(j).getNombre())
+    				vehiculos.get(j).setColorVehiculo(listaColores[18]);
+    		}
     	}
 		for (int i = 0; i < tablero.getMatriz().length; i++) { //Bucle para recorrer la matriz que representa nuestro tablero
             for (int j = 0; j < tablero.getMatriz()[0].length; j++) {
