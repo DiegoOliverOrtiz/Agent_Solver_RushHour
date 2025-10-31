@@ -116,7 +116,7 @@ public class Solver {
 		solucion="";
 		for(int i=0;i<invertir.length;i++) {
 			int posicionInvertir=(invertir.length-1)-i;
-			solucion=invertir+invertir[posicionInvertir]+"\n";
+			solucion=solucion+invertir[posicionInvertir]+"\n";
 		}
 		return solucion;
 	}

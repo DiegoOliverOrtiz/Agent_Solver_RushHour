@@ -102,7 +102,20 @@ public class ControlVisual {
 			tableroAux.generarVehiculos();
 			tableroAux.definirOrientacionVehiculosTablero();
 			tableros.add(tableroAux);
-			for(int i=0;i<separados.length;i++) {
+			int tamanoSeparados=0;
+			if(args.length==6) {
+				if(args[5].equals("--stats"))
+					tamanoSeparados=separados.length-6;
+				else
+					tamanoSeparados=separados.length;
+			}
+			else if(args.length==7) {
+				if(args[6].equals("stats"))
+					tamanoSeparados=separados.length-6;
+				else
+					tamanoSeparados=separados.length;
+			}
+			for(int i=0;i<tamanoSeparados;i++) {
 				separados[i]=separados[i].substring(1, separados[i].length() - 1);
 			}
 			if(args[0].equals("successors")) {
@@ -242,6 +255,8 @@ public class ControlVisual {
             			k=vehiculos.size()+1;
             		}
             	}
+            	if((i==5&&j==2)&&tablero.getValorMatriz(i, j)=='o')
+            		etiqueta=etiqueta+"META";
                 JLabel celda = new JLabel(etiqueta, SwingConstants.CENTER); //Creamos una etiqueta para representar cada celda de la matriz
                 celda.setOpaque(true); //Lo poenmos opaco para que se vea el color
                 celda.setBackground(colorCoche); //Y ponemos el color de fondo
