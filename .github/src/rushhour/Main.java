@@ -49,7 +49,7 @@ public class Main {
 			//////
 			else if(args[0].equals("solver")&&args[1].equals("-s")&&args.length>2) {
 				Solver solucionador = new Solver();
-				String resultadoConsulta=solucionador.bfs(args[2]);
+				String resultadoConsulta=solucionador.realizarBusqueda(args);
 				System.out.println(resultadoConsulta);
 				visual.crearVisual(resultadoConsulta, args);
 			}

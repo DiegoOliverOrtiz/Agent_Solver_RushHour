@@ -255,10 +255,12 @@ public class ControlVisual {
             			k=vehiculos.size()+1;
             		}
             	}
-            	if((i==5&&j==2)&&tablero.getValorMatriz(i, j)=='o')
-            		etiqueta=etiqueta+"META";
                 JLabel celda = new JLabel(etiqueta, SwingConstants.CENTER); //Creamos una etiqueta para representar cada celda de la matriz
                 celda.setOpaque(true); //Lo poenmos opaco para que se vea el color
+                if((i==2&&j==5)&&tablero.getValorMatriz(i, j)=='o') { //Para ver donde está la meta
+            		etiqueta=etiqueta+"META";
+            		colorFuente=Color.RED;
+            	}
                 celda.setBackground(colorCoche); //Y ponemos el color de fondo
                 celda.setForeground(colorFuente); //El color de la etiqueta siempre a blanco
                 celda.setFont(new Font("Arial", Font.BOLD, 18)); //La fuente

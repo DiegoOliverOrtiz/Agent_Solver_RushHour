@@ -1,14 +1,14 @@
 package rushhour;
 
 public class Nodo {
-	int id;
-	String padre;
-	String accion;
-	Tablero estado;
-	int costo;
-	int profundidad;
-	int heuristica;
-	int valor;
+	private int id;
+	private String padre;
+	private String accion;
+	private Tablero estado;
+	private int costo;
+	private int profundidad;
+	private int heuristica;
+	private int valor;
 	
 	public Nodo(int id, String padre, String accion, Tablero estado, int costo, int profundidad, int heuristica, int valor) {
 		this.id = id;
