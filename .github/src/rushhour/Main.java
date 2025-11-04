@@ -1,6 +1,4 @@
-package rushhour;
-
-import java.util.ArrayList;
+package rushhour; //v0.3.1
 
 /* Descripción: 
  * 	Clase principal del programa
