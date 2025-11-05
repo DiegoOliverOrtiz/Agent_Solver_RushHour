@@ -27,7 +27,7 @@ public class Solver {
 								if(args[5].equals("--depth")&&args.length>6) {
 									try {
 										int profundidad=Integer.parseInt(args[6]);
-										if (args.length>8) {
+										if (args.length>7) {
 											if(args[7].equals("--stats"))
 												activarStats=true;
 										}
@@ -117,7 +117,7 @@ public class Solver {
 						id++;
 						if(nodoAnalizar.getProfundidad()+1>profundidadMaxima)
 							profundidadMaxima++;
-						Nodo nodoSucesor=new Nodo(id,idPadre+"", sucesoresSeparados[0],tableroSucesor,coste,nodoAnalizar.getProfundidad()+1,0,nodoAnalizar.getProfundidad());
+						Nodo nodoSucesor=new Nodo(id,idPadre+"", sucesoresSeparados[0],tableroSucesor,coste,nodoAnalizar.getProfundidad()+1,0,nodoAnalizar.getProfundidad()+1);
 						frontera.add(nodoSucesor);
 						nodosGenerados++;
 					}
@@ -160,8 +160,10 @@ public class Solver {
 			Nodo nodoAnalizar = frontera.pop();
 			boolean podar =false;
 			for(int i=0;i<listaCerrada.size();i++) {
-				if(nodoAnalizar.getEstado().getSemilla().equals(listaCerrada.get(i).getEstado().getSemilla()))
+			if(nodoAnalizar.getEstado().getSemilla().equals(listaCerrada.get(i).getEstado().getSemilla())&&nodoAnalizar.getValor()<=listaCerrada.get(i).getValor()) {
 					podar=true;
+					i=listaCerrada.size()+1;
+				}
 			}
 			if(!podar) {
 				listaCerrada.add(nodoAnalizar);
@@ -176,11 +178,10 @@ public class Solver {
 				if(control.preguntasTablero(goal).equals("TRUE")) {
 					solucionEncontrada=true;
 				}
-				else if(nodoAnalizar.getProfundidad()>profundidadPermitida) {
+				else if(nodoAnalizar.getProfundidad()>=profundidadPermitida) {
 					nodosPodados++;
 				}
 				else {
-					System.out.println(nodoAnalizar.toString());
 					nodosExpandidos++;
 					String sucesores = control.sucesoresTablero(tableroNodo.getSemilla());
 					String[] separados = sucesores.split("\n");
@@ -196,7 +197,7 @@ public class Solver {
 						id++;
 						if(nodoAnalizar.getProfundidad()+1>profundidadMaxima)
 							profundidadMaxima++;
-						Nodo nodoSucesor=new Nodo(id,idPadre+"", sucesoresSeparados[0],tableroSucesor,coste,nodoAnalizar.getProfundidad()+1,0,nodoAnalizar.getProfundidad());
+						Nodo nodoSucesor=new Nodo(id,idPadre+"", sucesoresSeparados[0],tableroSucesor,coste,nodoAnalizar.getProfundidad()+1,0,(nodoAnalizar.getProfundidad()+1)*-1);
 						fronteraAdd.add(nodoSucesor);
 						nodosGenerados++;
 					}
