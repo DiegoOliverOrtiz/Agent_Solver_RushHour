@@ -1,6 +1,5 @@
 package rushhour;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 

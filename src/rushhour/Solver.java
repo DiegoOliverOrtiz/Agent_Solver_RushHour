@@ -160,14 +160,12 @@ public class Solver {
 			Nodo nodoAnalizar = frontera.pop();
 			boolean podar =false;
 			for(int i=0;i<listaCerrada.size();i++) {
-			if(nodoAnalizar.getEstado().getSemilla().equals(listaCerrada.get(i).getEstado().getSemilla())&&nodoAnalizar.getValor()<=listaCerrada.get(i).getValor()) {
+				if(nodoAnalizar.getEstado().getSemilla().equals(listaCerrada.get(i).getEstado().getSemilla())&&nodoAnalizar.getValor()<=listaCerrada.get(i).getValor()) {
 					podar=true;
-					i=listaCerrada.size()+1;
+					i=listaCerrada.size();
 				}
 			}
 			if(!podar) {
-				listaCerrada.add(nodoAnalizar);
-				listaCerrada.add(nodoAnalizar);
 				Tablero tableroNodo = nodoAnalizar.getEstado();
 				//VER SI ES SOLUCION
 				String[] goal = new String[4];
@@ -177,11 +175,13 @@ public class Solver {
 				goal[3]="--goal";
 				if(control.preguntasTablero(goal).equals("TRUE")) {
 					solucionEncontrada=true;
+					listaCerrada.add(nodoAnalizar);
 				}
 				else if(nodoAnalizar.getProfundidad()>=profundidadPermitida) {
 					nodosPodados++;
 				}
 				else {
+					listaCerrada.add(nodoAnalizar);
 					nodosExpandidos++;
 					String sucesores = control.sucesoresTablero(tableroNodo.getSemilla());
 					String[] separados = sucesores.split("\n");
