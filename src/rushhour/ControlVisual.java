@@ -19,7 +19,7 @@ import javax.swing.*;
  * */
 public class ControlVisual {
 	//Al constructor le pasamos solo el tablero de nuestro juego
-	private Color[] listaColores = new Color[10];
+	private Color[] listaColores = new Color[36]; //36 por si nos meten coches de uno (por verify)
 	int iteracion=0;
 	
 	public ControlVisual() {
@@ -97,56 +97,59 @@ public class ControlVisual {
 		////// SUCCESSORS Y SOLVER
 		//////
 		else if((args[0].equals("successors")&&args[1].equals("-s")&&args.length>2)||(args[0].equals("solver")&&args[1].equals("-s")&&args.length>3)) {
-			String[] separados = resultado.split("\n");
-			Tablero tableroAux = new Tablero(args[2]);
-			tableroAux.generarVehiculos();
-			tableroAux.definirOrientacionVehiculosTablero();
-			tableros.add(tableroAux);
-			int tamanoSeparados=0;
-			if(args.length==6) {
-				if(args[5].equals("--stats"))
-					tamanoSeparados=separados.length-6;
-				else
-					tamanoSeparados=separados.length;
-			}
-			else if(args.length==7) {
-				if(args[6].equals("stats"))
-					tamanoSeparados=separados.length-6;
-				else
-					tamanoSeparados=separados.length;
-			}
-			for(int i=0;i<tamanoSeparados;i++) {
-				separados[i]=separados[i].substring(1, separados[i].length() - 1);
-			}
-			if(args[0].equals("successors")) {
-				for(int i=0;i<separados.length;i++) {
-					String[] sucesoresSeparados=separados[i].split(",");
-					if(sucesoresSeparados.length==3) {
-						Tablero tableroAux2 = new Tablero(sucesoresSeparados[1]);
-						tableroAux2.generarVehiculos();
-						tableroAux2.definirOrientacionVehiculosTablero();
-						tableros.add(tableroAux2);
-						dibujable=true;
+			ControlTablero controlAux = new ControlTablero();
+			if(controlAux.verificarTablero(args[2])==0) {
+				String[] separados = resultado.split("\n");
+				Tablero tableroAux = new Tablero(args[2]);
+				tableroAux.generarVehiculos();
+				tableroAux.definirOrientacionVehiculosTablero();
+				tableros.add(tableroAux);
+				int tamanoSeparados=0;
+				if(args.length==6) {
+					if(args[5].equals("--stats"))
+						tamanoSeparados=separados.length-6;
+					else
+						tamanoSeparados=separados.length;
+				}
+				else if(args.length==7) {
+					if(args[6].equals("stats"))
+						tamanoSeparados=separados.length-6;
+					else
+						tamanoSeparados=separados.length;
+				}
+				for(int i=0;i<tamanoSeparados;i++) {
+					separados[i]=separados[i].substring(1, separados[i].length() - 1);
+				}
+				if(args[0].equals("successors")) {
+					for(int i=0;i<separados.length;i++) {
+						String[] sucesoresSeparados=separados[i].split(",");
+						if(sucesoresSeparados.length==3) {
+							Tablero tableroAux2 = new Tablero(sucesoresSeparados[1]);
+							tableroAux2.generarVehiculos();
+							tableroAux2.definirOrientacionVehiculosTablero();
+							tableros.add(tableroAux2);
+							dibujable=true;
+						}
 					}
 				}
-			}
-			else if(args[0].equals("solver")) {
-				for(int i=1;i<separados.length;i++) {
-					String[] solverSeparados=separados[i].split(",");
-					if(solverSeparados.length==8) {
-						Tablero tableroAux2 = new Tablero(solverSeparados[3]);
-						tableroAux2.generarVehiculos();
-						tableroAux2.definirOrientacionVehiculosTablero();
-						tableros.add(tableroAux2);
-						dibujable=true;
+				else if(args[0].equals("solver")) {
+					for(int i=1;i<separados.length;i++) {
+						String[] solverSeparados=separados[i].split(",");
+						if(solverSeparados.length==8) {
+							Tablero tableroAux2 = new Tablero(solverSeparados[3]);
+							tableroAux2.generarVehiculos();
+							tableroAux2.definirOrientacionVehiculosTablero();
+							tableros.add(tableroAux2);
+							dibujable=true;
+						}
 					}
 				}
-			}
+				
+			} //Vemos si es successors y si lo es lo ejecuta
 			
-		} //Vemos si es successors y si lo es lo ejecuta
-		
-		if(dibujable)
-			mostrarTablero(tableros, args);
+			if(dibujable)
+				mostrarTablero(tableros, args);
+		}
 	}
 	
 	private void mostrarTablero(ArrayList<Tablero> tableros, String[] args) {
@@ -227,7 +230,7 @@ public class ControlVisual {
 	
 	private void generarPanelVehiculos(Tablero tablero, JPanel panelVehiculos) {
 		panelVehiculos.removeAll();
-		ArrayList<Vehiculo> vehiculos = tablero.getVehiculos();
+		ArrayList<Vehiculo> vehiculos = tablero.getVehiculos(); 
     	char[] nombresVehiculos =new char[vehiculos.size()];
     	for(int i=0;i<vehiculos.size();i++) {
     		nombresVehiculos[i]=vehiculos.get(i).getNombre();

@@ -92,7 +92,7 @@ public class Tablero {
 	public String getSucesoresJuntos() { //Retorna los sucesores como String y no como arraylist
 		String retorno="";
 		if(sucesores.size()<1)
-			retorno="No hay sucesores para este tablero";
+			retorno="No hay sucesores para este tablero.";
 		else {
 			Collections.sort(sucesores); //Los ordena alfabéticamente
 			for(int i=0;i<sucesores.size();i++) {

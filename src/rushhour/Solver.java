@@ -1,6 +1,7 @@
 package rushhour;
 
 import java.util.*;
+import java.io.*;
 
 public class Solver {
 	private ControlTablero control = new ControlTablero();

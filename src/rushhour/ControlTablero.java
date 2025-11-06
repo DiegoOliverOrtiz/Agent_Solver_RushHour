@@ -293,7 +293,7 @@ public class ControlTablero {
 			for(int i=0;i<tableroAux.getVehiculos().size();i++) {
 				/*Hacemos un for para las coordenadas positivas, solo llega hasta +4 porque por el propio tamaño del vehículo 4 
 				 es lo máximo que podría sin salirse del tablero (suponiendo un vehículo de tamaño minimo = 2)*/
-				for(int j=1;j<4;j++) { //Positivos
+				for(int j=1;j<=4;j++) { //Positivos
 					String[] cadenaPreguntarMove=new String[5]; //Generamos un array de strings para invocar a question --move ya que nos sirve
 					cadenaPreguntarMove[0]="question"; //Asignamos los parametros que tendría --move 
 					cadenaPreguntarMove[1]="-s";
@@ -314,7 +314,7 @@ public class ControlTablero {
 					}
 				}
 				//Aplicamos exactamente lo mismo pero para los movimientos negativos
-				for(int j=1;j<4;j++) { //Negativos
+				for(int j=1;j<=4;j++) { //Negativos
 					String[] cadenaPreguntarMove=new String[5];
 					cadenaPreguntarMove[0]="question";
 					cadenaPreguntarMove[1]="-s";
