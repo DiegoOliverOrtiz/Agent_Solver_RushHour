@@ -46,7 +46,7 @@ jobs:
           PATHTEST=$(sed -n '2p' test.txt)
           PROGRAMA=$(sed -n '1p' test/programa.txt) # Leer nombre del programa desde test/programa.txt
           VALOR_TEST="$(tr -d '\n\r' < test/test_activos.json)"
-          echo "VALOR_TEST=${VALOR_TEST}" >> $GITHUB_ENV
+          echo "TESTS_ACTIVOS=${VALOR_TEST}" >> $GITHUB_ENV
 
 
           # Limpiar el lenguaje: quitar espacios, pasar a mayúsculas
@@ -114,6 +114,7 @@ jobs:
           echo "✅ Variables finales:"
           echo "LENGUAJE=$LENGUAJE"
           echo "PATHEXEC=$PATHTEST"
+          echo "TEST_ACTIVOS=$TEST_ACTIVOS"
 
 
       - name: Obtener todas las carpetas absolutas de test
@@ -262,5 +263,7 @@ jobs:
             T1_RESULTS: "${{ steps.T1.outcome != 'skipped' && steps.T1.outputs.result || '' }}"
             T2_RESULTS: "${{ steps.T2.outcome != 'skipped' && steps.T2.outputs.result || '' }}"
             T3_RESULTS: "${{ steps.T3.outcome != 'skipped' && steps.T3.outputs.result || '' }}"
+            T4_RESULTS: "${{ steps.T4.outcome != 'skipped' && steps.T4.outputs.result || '' }}"
+
         with:
             runners: ${{ steps.runners.outputs.list }}
