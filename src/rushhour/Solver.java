@@ -230,38 +230,20 @@ public class Solver {
 		int nodosPodados=0;
 		int nodosExpandidos=0;
 		int profundidadMaxima=0;
-		//Cola para BFS
-		Queue<Nodo> fronteraBFS = new LinkedList<>();
-		//Pila para DFS
-		Stack<Nodo> fronteraDFS = new Stack<>();
-		//Cola con prioridad para UCS y busquedas informadas
-		PriorityQueue<Nodo> cola = new PriorityQueue<>();
-		//Lista cerrada
+		Frontera frontera = new Frontera(estrategia);
 		ArrayList<Nodo> listaCerrada = new ArrayList<>();
-		
 		//Primer nodo de todos
 		Tablero tableroInicial = new Tablero(semilla);
 		tableroInicial.generarVehiculos();
 		tableroInicial.definirOrientacionVehiculosTablero();
 		int id=0;
 		Nodo nodoInicial=new Nodo(id,"none", "___",tableroInicial,0,0,0,0);
-		switch(estrategia) {
-			case "BFS":
-				fronteraBFS.add(nodoInicial);
-				break;
-			case "DFS":
-				fronteraDFS.add(nodoInicial);
-				break;
-			case "UCS":
-				break;
-			default:
-				break;
-		}
+		frontera.addNodo(nodoInicial);
 		
 		nodosGenerados++;
 		double tiempoInicio = System.nanoTime();
-		while(solucionEncontrada==false&&frontera.size()>0) {
-			Nodo nodoAnalizar = frontera.pop();
+		while(solucionEncontrada==false&&frontera.getSize()>0) {
+			Nodo nodoAnalizar = frontera.sacarNodo();
 			boolean podar =false;
 			for(int i=0;i<listaCerrada.size();i++) {
 				if(nodoAnalizar.getEstado().getSemilla().equals(listaCerrada.get(i).getEstado().getSemilla())&&nodoAnalizar.getValor()<=listaCerrada.get(i).getValor()) {
@@ -281,7 +263,7 @@ public class Solver {
 					solucionEncontrada=true;
 					listaCerrada.add(nodoAnalizar);
 				}
-				else if(nodoAnalizar.getProfundidad()>=profundidadPermitida) {
+				else if(estrategia.equals("DFS")&&nodoAnalizar.getProfundidad()>=profundidadPermitida) {
 					nodosPodados++;
 				}
 				else {
@@ -289,7 +271,6 @@ public class Solver {
 					nodosExpandidos++;
 					String sucesores = control.sucesoresTablero(tableroNodo.getSemilla());
 					String[] separados = sucesores.split("\n");
-					Stack<Nodo> fronteraAdd = new Stack<>();
 					for(int i=0;i<separados.length;i++) {
 						separados[i]=separados[i].substring(1, separados[i].length() - 1);
 						String[] sucesoresSeparados=separados[i].split(",");
@@ -298,17 +279,16 @@ public class Solver {
 						tableroSucesor.definirOrientacionVehiculosTablero();
 						int idPadre=nodoAnalizar.getId();
 						int coste = nodoAnalizar.getCosto()+Integer.parseInt(sucesoresSeparados[2]);
+						int heuristica=0;
 						id++;
 						if(nodoAnalizar.getProfundidad()+1>profundidadMaxima)
 							profundidadMaxima++;
-						Nodo nodoSucesor=new Nodo(id,idPadre+"", sucesoresSeparados[0],tableroSucesor,coste,nodoAnalizar.getProfundidad()+1,0,(nodoAnalizar.getProfundidad()+1)*-1);
-						fronteraAdd.add(nodoSucesor);
+						Nodo nodoSucesor=frontera.crearNodoConEstrategia(id,idPadre+"", sucesoresSeparados[0],tableroSucesor,coste,nodoAnalizar.getProfundidad()+1,heuristica);
+						frontera.addNodo(nodoSucesor);
 						nodosGenerados++;
 					}
-					int tamanoAnadir=fronteraAdd.size();
-					for(int i=0;i<tamanoAnadir;i++) {
-						frontera.add(fronteraAdd.pop());
-					}
+					if(estrategia.equals("DFS"))
+						frontera.addFronteraDFS();
 				}
 			}
 			else

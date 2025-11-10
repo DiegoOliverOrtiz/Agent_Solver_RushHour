@@ -1,5 +1,6 @@
 package rushhour;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -12,7 +13,7 @@ public class Frontera {
 	private Stack<Nodo> fronteraDFS = new Stack<>();
 	private Stack<Nodo> fronteraAuxDFS = new Stack<>(); //Pila auxiliar para invertir y meter en orden correcto
 	//Cola con prioridad para UCS y busquedas informadas
-	private PriorityQueue<Nodo> cola = new PriorityQueue<>();
+	private PriorityQueue<Nodo> fronteraValor = new PriorityQueue<>();
 	
 	String estrategia;
 	
@@ -20,7 +21,7 @@ public class Frontera {
 		this.estrategia=estrategia;
 	}
 	
-	public void addFrontera(Nodo nodoAdd) {
+	public void addNodo(Nodo nodoAdd) {
 		switch (estrategia) {
 			case "BFS":
 				fronteraBFS.add(nodoAdd);
@@ -38,7 +39,8 @@ public class Frontera {
 			fronteraDFS.add(fronteraAuxDFS.pop());
 		}
 	}
-	public Nodo sacarFrontera() {
+	
+	public Nodo sacarNodo() {
 		Nodo nodoSacar = new Nodo();	
 		switch (estrategia) {
 			case "BFS":
@@ -51,5 +53,38 @@ public class Frontera {
 				break;
 		}
 		return nodoSacar;
+	}
+	
+	public Nodo crearNodoConEstrategia(int id, String idPadre, String accion, Tablero tableroSucesor, int coste, int profundidad, int heuristica) {
+		Nodo nodoCrear=new Nodo();
+		switch (estrategia) {
+		case "BFS":
+			Nodo nodoSucesorBFS=new Nodo(id,idPadre+"", accion, tableroSucesor, coste, profundidad, 0, profundidad);
+			nodoCrear=nodoSucesorBFS;
+			break;
+		case "DFS":
+			Nodo nodoSucesorDFS=new Nodo(id,idPadre+"", accion, tableroSucesor, coste, profundidad, 0, profundidad*-1);
+			nodoCrear=nodoSucesorDFS;
+			break;
+		case "UCS":
+			break;
+		}
+		return nodoCrear;
+	}
+	
+	public int getSize() {
+		int tamano=0;
+		switch (estrategia) {
+		case "BFS":
+			tamano=fronteraBFS.size();
+			break;
+		case "DFS":
+			tamano=fronteraDFS.size();
+			break;
+		case "UCS":
+			tamano=fronteraValor.size();
+			break;
+		}
+		return tamano;
 	}
 }
