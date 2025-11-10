@@ -44,13 +44,41 @@ public class Solver {
 							else
 								resultado="Parametros insuficientes para --strategy DFS, se debe incluir la profundidad como: --strategy DFS --depth <valor-profundidad>";
 							break;
-						case "UCS":
-							if (args.length>5) {
-								if(args[5].equals("--stats"))
-									activarStats=true;
+							
+						/////////////PONTE UN CASCO ZONA DE OBRAS WIP
+						case "WIP":
+							int profundidad=0;
+							switch (args[5]) {
+							case "BFS":
+								if (args.length>6) {
+									if(args[6].equals("--stats"))
+										activarStats=true;
+								}
+								resultado=bfs(args[2], activarStats);
+								break;
+							case "DFS":
+								if(args.length>6) {
+									if(args[6].equals("--depth")&&args.length>6) {
+										try {
+											profundidad=Integer.parseInt(args[7]);
+											if (args.length>8) {
+												if(args[8].equals("--stats"))
+													activarStats=true;
+											}
+										}
+										catch (NumberFormatException e){
+											resultado="Valor incorrecto para --depth, asegurese de que sea un número.";
+										}
+									}
+									else
+										resultado="Formato incorrecto para DFS, debe ser: solver -s <semilla> --strategy DFS --depth <valor-profundidad>";
+								}
+								else
+									resultado="Parametros insuficientes para --strategy DFS, se debe incluir la profundidad como: --strategy DFS --depth <valor-profundidad>";
+								break;
 							}
-							resultado=ucs(args[2], activarStats);
-							break;
+							resultado=resolucion(args[2], activarStats, args[5], profundidad);
+							break;	
 						default:
 							resultado="Estrategia no permitida, prueba con: BFS, DFS o UCS";
 					}
