@@ -90,5 +90,8 @@ public class Nodo {
 		this.valor = valor;
 	}
 
+	public int compareTo(Nodo otro) { //compareTo para UCS y en un futuro búsquedas informadas
+		return Integer.compare(this.valor, otro.valor);
+	}
 	
 }
