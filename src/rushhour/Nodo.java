@@ -10,6 +10,8 @@ public class Nodo {
 	private int heuristica;
 	private int valor;
 	
+	public Nodo() {
+	}
 	public Nodo(int id, String padre, String accion, Tablero estado, int costo, int profundidad, int heuristica, int valor) {
 		this.id = id;
 		this.padre = padre;
