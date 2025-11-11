@@ -267,14 +267,15 @@ public class Solver {
 		int id=0;
 		Nodo nodoInicial=new Nodo(id,"none", "___",tableroInicial,0,0,0,0);
 		frontera.addNodo(nodoInicial);
-		
+		if(estrategia.equals("DFS"))
+			frontera.addFronteraDFS();
 		nodosGenerados++;
 		double tiempoInicio = System.nanoTime();
 		while(solucionEncontrada==false&&frontera.getSize()>0) {
 			Nodo nodoAnalizar = frontera.sacarNodo();
 			boolean podar =false;
 			for(int i=0;i<listaCerrada.size();i++) {
-				if(nodoAnalizar.getEstado().getSemilla().equals(listaCerrada.get(i).getEstado().getSemilla())&&nodoAnalizar.getValor()<=listaCerrada.get(i).getValor()) {
+				if(nodoAnalizar.getEstado().getSemilla().equals(listaCerrada.get(i).getEstado().getSemilla())&&frontera.estrategiaPoda(nodoAnalizar.getValor(), listaCerrada.get(i).getValor())) {
 					podar=true;
 					i=listaCerrada.size();
 				}
@@ -311,8 +312,7 @@ public class Solver {
 						id++;
 						if(nodoAnalizar.getProfundidad()+1>profundidadMaxima)
 							profundidadMaxima++;
-						Nodo nodoSucesor=frontera.crearNodoConEstrategia(id,idPadre+"", sucesoresSeparados[0],tableroSucesor,coste,nodoAnalizar.getProfundidad()+1,heuristica);
-						frontera.addNodo(nodoSucesor);
+						frontera.addNodo(frontera.crearNodoConEstrategia(id,idPadre+"", sucesoresSeparados[0],tableroSucesor,coste,nodoAnalizar.getProfundidad()+1,heuristica));
 						nodosGenerados++;
 					}
 					if(estrategia.equals("DFS"))

@@ -15,7 +15,7 @@ public class Frontera {
 	//Cola con prioridad para UCS y busquedas informadas
 	private PriorityQueue<Nodo> fronteraValor = new PriorityQueue<>();
 	
-	String estrategia;
+	private String estrategia;
 	
 	public Frontera(String estrategia) {
 		this.estrategia=estrategia;
@@ -59,11 +59,11 @@ public class Frontera {
 		Nodo nodoCrear=new Nodo();
 		switch (estrategia) {
 		case "BFS":
-			Nodo nodoSucesorBFS=new Nodo(id,idPadre+"", accion, tableroSucesor, coste, profundidad, 0, profundidad);
+			Nodo nodoSucesorBFS=new Nodo(id,idPadre, accion, tableroSucesor, coste, profundidad, 0, profundidad);
 			nodoCrear=nodoSucesorBFS;
 			break;
 		case "DFS":
-			Nodo nodoSucesorDFS=new Nodo(id,idPadre+"", accion, tableroSucesor, coste, profundidad, 0, profundidad*-1);
+			Nodo nodoSucesorDFS=new Nodo(id,idPadre, accion, tableroSucesor, coste, profundidad, 0, profundidad*-1);
 			nodoCrear=nodoSucesorDFS;
 			break;
 		case "UCS":
@@ -75,16 +75,34 @@ public class Frontera {
 	public int getSize() {
 		int tamano=0;
 		switch (estrategia) {
-		case "BFS":
-			tamano=fronteraBFS.size();
-			break;
-		case "DFS":
-			tamano=fronteraDFS.size();
-			break;
-		case "UCS":
-			tamano=fronteraValor.size();
-			break;
+			case "BFS":
+				tamano=fronteraBFS.size();
+				break;
+			case "DFS":
+				tamano=fronteraDFS.size();
+				break;
+			case "UCS":
+				tamano=fronteraValor.size();
+				break;
 		}
 		return tamano;
+	}
+	
+	public boolean estrategiaPoda(int valorNodoAnalizar, int valorNodoLC) {
+		boolean AnalizarConPeorValor=false;
+		switch (estrategia) {
+		case "BFS":
+			if(valorNodoAnalizar>=valorNodoLC)
+				AnalizarConPeorValor=true;
+			break;
+		case "DFS":
+			if(valorNodoAnalizar<=valorNodoLC)
+				AnalizarConPeorValor=true;
+			break;
+		case "UCS":
+			break;
+		
+		}
+		return AnalizarConPeorValor;
 	}
 }

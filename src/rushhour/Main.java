@@ -49,7 +49,7 @@ public class Main {
 				Solver solucionador = new Solver();
 				String resultadoConsulta=solucionador.realizarBusqueda(args);
 				System.out.println(resultadoConsulta);
-				visual.crearVisual(resultadoConsulta, args);
+				//visual.crearVisual(resultadoConsulta, args);
 			}
 			
 			//////
