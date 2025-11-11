@@ -98,7 +98,7 @@ public class Solver {
 		double tiempoInicio = System.nanoTime();
 		while(solucionEncontrada==false&&frontera.size()>0) {
 			Nodo nodoAnalizar = frontera.poll();
-			boolean podar =false;
+			boolean podar = false;
 			for(int i=0;i<listaCerrada.size();i++) {
 				if(nodoAnalizar.getEstado().getSemilla().equals(listaCerrada.get(i).getEstado().getSemilla())&&(Math.abs(nodoAnalizar.getValor())>=Math.abs(listaCerrada.get(i).getValor()))) {
 					podar=true;
