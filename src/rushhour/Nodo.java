@@ -1,6 +1,6 @@
 package rushhour;
 
-public class Nodo {
+public class Nodo implements Comparable<Nodo>{
 	private int id;
 	private String padre;
 	private String accion;
@@ -93,7 +93,11 @@ public class Nodo {
 	}
 
 	public int compareTo(Nodo otro) { //compareTo para UCS y en un futuro búsquedas informadas
-		return Integer.compare(this.valor, otro.valor);
+		int compararValores = Integer.compare(this.valor, otro.valor);
+		if(compararValores==0) {
+			compararValores= Integer.compare(this.id, otro.id);
+		}
+		return compararValores;
 	}
 	
 }

@@ -45,110 +45,115 @@ public class ControlVisual {
 	 * */
 	
 	public void crearVisual(String resultado, String[] args) {
-		ArrayList<Tablero> tableros = new ArrayList<>();
-		boolean dibujable=false;
-		//////
-		////// VERIFY
-		//////
-		if(args[0].equals("verify")) { //Primero comprobamos si nos han metido el comando verify
-			int resultadoInt = Integer.parseInt(resultado);
-			if(resultadoInt>1||resultadoInt==0) {
-				Tablero tableroAux = new Tablero(args[2]);
-				tableroAux.generarVehiculos();
-				tableroAux.definirOrientacionVehiculosTablero();
-				tableros.add(tableroAux);
-				dibujable=true;
-			}
-				
-		}
-		//////
-		////// QUESTION
-		//////
-		else if(args[0].equals("question")) {//Si no es la opción verify vemos si es question
-			if((args[3].equals("--whereis")&&args.length>4)||(args[3].equals("--what")&&args.length>4)||(args[3].equals("--size")&&args.length>4)||args[3].equals("--howmany")||args[3].equals("--goal")) {
-				ControlTablero controlAux = new ControlTablero();
-				int valido=controlAux.verificarTablero(args[2]);
-				if(valido==0) {
+		try {
+			ArrayList<Tablero> tableros = new ArrayList<>();
+			boolean dibujable=false;
+			//////
+			////// VERIFY
+			//////
+			if(args[0].equals("verify")) { //Primero comprobamos si nos han metido el comando verify
+				int resultadoInt = Integer.parseInt(resultado);
+				if(resultadoInt>1||resultadoInt==0) {
 					Tablero tableroAux = new Tablero(args[2]);
 					tableroAux.generarVehiculos();
 					tableroAux.definirOrientacionVehiculosTablero();
 					tableros.add(tableroAux);
 					dibujable=true;
-				}		
+				}
+					
 			}
-			else if(args[3].equals("--move")&&args.length>4) {
+			//////
+			////// QUESTION
+			//////
+			else if(args[0].equals("question")) {//Si no es la opción verify vemos si es question
+				if((args[3].equals("--whereis")&&args.length>4)||(args[3].equals("--what")&&args.length>4)||(args[3].equals("--size")&&args.length>4)||args[3].equals("--howmany")||args[3].equals("--goal")) {
+					ControlTablero controlAux = new ControlTablero();
+					int valido=controlAux.verificarTablero(args[2]);
+					if(valido==0) {
+						Tablero tableroAux = new Tablero(args[2]);
+						tableroAux.generarVehiculos();
+						tableroAux.definirOrientacionVehiculosTablero();
+						tableros.add(tableroAux);
+						dibujable=true;
+					}		
+				}
+				else if(args[3].equals("--move")&&args.length>4) {
+					ControlTablero controlAux = new ControlTablero();
+					int validoInput=controlAux.verificarTablero(args[2]);
+					int validoResultado=controlAux.verificarTablero(resultado);
+					if(validoInput==0&&validoResultado==0) {
+						Tablero tableroAux = new Tablero(args[2]);
+						tableroAux.generarVehiculos();
+						tableroAux.definirOrientacionVehiculosTablero();
+						tableros.add(tableroAux);
+						Tablero tableroAux2 = new Tablero(resultado);
+						tableroAux2.generarVehiculos();
+						tableroAux2.definirOrientacionVehiculosTablero();
+						tableros.add(tableroAux2);
+						dibujable=true;
+					}
+				}
+			}
+			//////
+			////// SUCCESSORS Y SOLVER
+			//////
+			else if((args[0].equals("successors")&&args[1].equals("-s")&&args.length>2)||(args[0].equals("solver")&&args[1].equals("-s")&&args.length>3)) {
 				ControlTablero controlAux = new ControlTablero();
-				int validoInput=controlAux.verificarTablero(args[2]);
-				int validoResultado=controlAux.verificarTablero(resultado);
-				if(validoInput==0&&validoResultado==0) {
+				if(controlAux.verificarTablero(args[2])==0) {
+					String[] separados = resultado.split("\n");
 					Tablero tableroAux = new Tablero(args[2]);
 					tableroAux.generarVehiculos();
 					tableroAux.definirOrientacionVehiculosTablero();
 					tableros.add(tableroAux);
-					Tablero tableroAux2 = new Tablero(resultado);
-					tableroAux2.generarVehiculos();
-					tableroAux2.definirOrientacionVehiculosTablero();
-					tableros.add(tableroAux2);
-					dibujable=true;
-				}
+					int tamanoSeparados=0;
+					if(args.length==6) {
+						if(args[5].equals("--stats"))
+							tamanoSeparados=separados.length-6;
+						else
+							tamanoSeparados=separados.length;
+					}
+					else if(args.length==7) {
+						if(args[6].equals("stats"))
+							tamanoSeparados=separados.length-6;
+						else
+							tamanoSeparados=separados.length;
+					}
+					for(int i=0;i<tamanoSeparados;i++) {
+						separados[i]=separados[i].substring(1, separados[i].length() - 1);
+					}
+					if(args[0].equals("successors")) {
+						for(int i=0;i<separados.length;i++) {
+							String[] sucesoresSeparados=separados[i].split(",");
+							if(sucesoresSeparados.length==3) {
+								Tablero tableroAux2 = new Tablero(sucesoresSeparados[1]);
+								tableroAux2.generarVehiculos();
+								tableroAux2.definirOrientacionVehiculosTablero();
+								tableros.add(tableroAux2);
+								dibujable=true;
+							}
+						}
+					}
+					else if(args[0].equals("solver")) {
+						for(int i=1;i<separados.length;i++) {
+							String[] solverSeparados=separados[i].split(",");
+							if(solverSeparados.length==8) {
+								Tablero tableroAux2 = new Tablero(solverSeparados[3]);
+								tableroAux2.generarVehiculos();
+								tableroAux2.definirOrientacionVehiculosTablero();
+								tableros.add(tableroAux2);
+								dibujable=true;
+							}
+						}
+					}
+					
+				} //Vemos si es successors y si lo es lo ejecuta
+				
+				if(dibujable)
+					mostrarTablero(tableros, args);
 			}
 		}
-		//////
-		////// SUCCESSORS Y SOLVER
-		//////
-		else if((args[0].equals("successors")&&args[1].equals("-s")&&args.length>2)||(args[0].equals("solver")&&args[1].equals("-s")&&args.length>3)) {
-			ControlTablero controlAux = new ControlTablero();
-			if(controlAux.verificarTablero(args[2])==0) {
-				String[] separados = resultado.split("\n");
-				Tablero tableroAux = new Tablero(args[2]);
-				tableroAux.generarVehiculos();
-				tableroAux.definirOrientacionVehiculosTablero();
-				tableros.add(tableroAux);
-				int tamanoSeparados=0;
-				if(args.length==6) {
-					if(args[5].equals("--stats"))
-						tamanoSeparados=separados.length-6;
-					else
-						tamanoSeparados=separados.length;
-				}
-				else if(args.length==7) {
-					if(args[6].equals("stats"))
-						tamanoSeparados=separados.length-6;
-					else
-						tamanoSeparados=separados.length;
-				}
-				for(int i=0;i<tamanoSeparados;i++) {
-					separados[i]=separados[i].substring(1, separados[i].length() - 1);
-				}
-				if(args[0].equals("successors")) {
-					for(int i=0;i<separados.length;i++) {
-						String[] sucesoresSeparados=separados[i].split(",");
-						if(sucesoresSeparados.length==3) {
-							Tablero tableroAux2 = new Tablero(sucesoresSeparados[1]);
-							tableroAux2.generarVehiculos();
-							tableroAux2.definirOrientacionVehiculosTablero();
-							tableros.add(tableroAux2);
-							dibujable=true;
-						}
-					}
-				}
-				else if(args[0].equals("solver")) {
-					for(int i=1;i<separados.length;i++) {
-						String[] solverSeparados=separados[i].split(",");
-						if(solverSeparados.length==8) {
-							Tablero tableroAux2 = new Tablero(solverSeparados[3]);
-							tableroAux2.generarVehiculos();
-							tableroAux2.definirOrientacionVehiculosTablero();
-							tableros.add(tableroAux2);
-							dibujable=true;
-						}
-					}
-				}
-				
-			} //Vemos si es successors y si lo es lo ejecuta
-			
-			if(dibujable)
-				mostrarTablero(tableros, args);
+		catch(Exception e) {
+			System.out.println("Error al dibujar el tablero.");
 		}
 	}
 	

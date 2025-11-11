@@ -36,7 +36,7 @@ public class Main {
 			//////
 			////// SUCCESSORS
 			//////
-			else if(args[0].equals("successors")&&args[1].equals("-s")&&args.length>2) {//Vemos si es successors y si lo es lo ejecuta
+			else if(args[0].equals("successors")&&args[1].equals("-s")) {//Vemos si es successors y si lo es lo ejecuta
 					String resultadoConsulta=tablero.sucesoresTablero(args[2]);
 					System.out.println(resultadoConsulta);
 					visual.crearVisual(resultadoConsulta, args);
@@ -45,7 +45,7 @@ public class Main {
 			//////
 			////// SOLVER - WIP
 			//////
-			else if(args[0].equals("solver")&&args[1].equals("-s")&&args.length>2) {
+			else if(args[0].equals("solver")&&args[1].equals("-s")) {
 				Solver solucionador = new Solver();
 				String resultadoConsulta=solucionador.realizarBusqueda(args);
 				System.out.println(resultadoConsulta);

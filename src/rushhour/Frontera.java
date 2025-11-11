@@ -1,11 +1,14 @@
 package rushhour;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
 
+/*
+ * TO DO: MIRAR COMO PODEMOS IMPLEMENTAR DFS CON COLAS CON PRIORIDAD PARA VER SI ES MÁS EFICIENTE
+ * EN CASO DE SERLO ELIMINAR LA CLASE FRONTERA, NO TENDRÍA SENTIDO USARLA
+ */
 public class Frontera {
 	//Cola para BFS
 	private Queue<Nodo> fronteraBFS = new LinkedList<>();
@@ -21,15 +24,19 @@ public class Frontera {
 		this.estrategia=estrategia;
 	}
 	
-	public void addNodo(Nodo nodoAdd) {
+	public void addNodo(int id, String idPadre, String accion, Tablero tableroSucesor, int coste, int profundidad, int heuristica) {
 		switch (estrategia) {
 			case "BFS":
-				fronteraBFS.add(nodoAdd);
+				Nodo nodoSucesorBFS=new Nodo(id,idPadre, accion, tableroSucesor, coste, profundidad, 0, profundidad);
+				fronteraBFS.add(nodoSucesorBFS);
 				break;
 			case "DFS":
-				fronteraAuxDFS.add(nodoAdd); //Primero tiene que ir a la auxiliar
+				Nodo nodoSucesorDFS=new Nodo(id,idPadre, accion, tableroSucesor, coste, profundidad, 0, profundidad*-1);
+				fronteraAuxDFS.add(nodoSucesorDFS);
 				break;
 			case "UCS":
+				Nodo nodoSucesorUCS=new Nodo(id,idPadre, accion, tableroSucesor, coste, profundidad, 0, coste);
+				fronteraValor.add(nodoSucesorUCS);
 				break;
 		}
 	}
@@ -50,26 +57,10 @@ public class Frontera {
 				nodoSacar = fronteraDFS.pop();
 				break;
 			case "UCS":
+				nodoSacar=fronteraValor.poll();
 				break;
 		}
 		return nodoSacar;
-	}
-	
-	public Nodo crearNodoConEstrategia(int id, String idPadre, String accion, Tablero tableroSucesor, int coste, int profundidad, int heuristica) {
-		Nodo nodoCrear=new Nodo();
-		switch (estrategia) {
-		case "BFS":
-			Nodo nodoSucesorBFS=new Nodo(id,idPadre, accion, tableroSucesor, coste, profundidad, 0, profundidad);
-			nodoCrear=nodoSucesorBFS;
-			break;
-		case "DFS":
-			Nodo nodoSucesorDFS=new Nodo(id,idPadre, accion, tableroSucesor, coste, profundidad, 0, profundidad*-1);
-			nodoCrear=nodoSucesorDFS;
-			break;
-		case "UCS":
-			break;
-		}
-		return nodoCrear;
 	}
 	
 	public int getSize() {
@@ -89,20 +80,22 @@ public class Frontera {
 	}
 	
 	public boolean estrategiaPoda(int valorNodoAnalizar, int valorNodoLC) {
-		boolean AnalizarConPeorValor=false;
+		boolean AnalizarTienePeorValor=false;
 		switch (estrategia) {
 		case "BFS":
 			if(valorNodoAnalizar>=valorNodoLC)
-				AnalizarConPeorValor=true;
+				AnalizarTienePeorValor=true;
 			break;
 		case "DFS":
 			if(valorNodoAnalizar<=valorNodoLC)
-				AnalizarConPeorValor=true;
+				AnalizarTienePeorValor=true;
 			break;
 		case "UCS":
+			if(valorNodoAnalizar>=valorNodoLC)
+				AnalizarTienePeorValor=true;
 			break;
 		
 		}
-		return AnalizarConPeorValor;
+		return AnalizarTienePeorValor;
 	}
 }
