@@ -20,7 +20,7 @@ import javax.swing.*;
 public class ControlVisual {
 	//Al constructor le pasamos solo el tablero de nuestro juego
 	private Color[] listaColores = new Color[36]; //36 por si nos meten coches de uno (por verify)
-	int iteracion=0;
+	int iteracion=0; //Iteración para navegar entre los posibles estados
 	
 	public ControlVisual() {
 		for(int  i=0;i<listaColores.length;i++) { //Para cada color genera un número entre el 0 y el 255 (valor máximo del rgb)
@@ -35,26 +35,28 @@ public class ControlVisual {
 			listaColores[i]=c; //Añadimos y retornamos los colores
 		}
 	}
-	/* mostrarMatriz se encarga de dibujar el tablero mostrando una serie de etiquetas cuadradas que representarán a los coches
-	 * su funcionamiento es simple, crea un frame donde ir metiendo los elementos visuales, primero el panel principal y dentro
-	 * de este el panel coches dividido en 6x6 huecos libres para ir metiendo etiquetas de colores que representen lo que hay en cada  celda
-	 * para ello recorremos todo el tablero (pasado como parametro) suponiendo que encontraremos un hueco vacio ('o'), buscamos si en esa
-	 * casilla hay un coche (gracias a tenerlos guardados y pasados como parametro del metodo), en caso de haberlo guarda en unas
-	 * variables el color y nombre de dicho coche. Finaliza guardando el color y etiquetas necesarios para representar esa celda y ya tras
-	 * salir del bucle hace el frame visible
+
+	/* crearVisual se encarga de ver si lo que le pasamos a la clase es dibujable (puede que nos llegue un mensaje de error)
+	 * luuego en función del método que el usuario haya elegido (verify, successors...) los representará de una forma u otra
+	 * los metodos que solo generan una salida, como verify o question --goal por ejemplo solo representarán la semilla que pasemos
+	 * como parametro de entrada de la función a usar, mientras que métodso que dan múltiples soluciones como solver o successors
+	 * mostrarán todos los tableros que existen como salida (todos los sucesores o todo el camino solución del solver)
+	 * 
+	 * Parametros de entrada:
+	 * 	resultado: es el resultado del método original al que llamemos (0 o 1 o un númeor si fuera verify, la cadena de nodos solución si fuera solver...)
+	 * 	args: args del programa original
 	 * */
-	
 	public void crearVisual(String resultado, String[] args) {
 		try {
-			ArrayList<Tablero> tableros = new ArrayList<>();
-			boolean dibujable=false;
+			ArrayList<Tablero> tableros = new ArrayList<>(); //Lista de tableros, serán todos los tableros que representaremos
+			boolean dibujable=false; //Variable que nos confirma si es un tablero dibujable u otra cosa
 			//////
 			////// VERIFY
 			//////
 			if(args[0].equals("verify")) { //Primero comprobamos si nos han metido el comando verify
 				int resultadoInt = Integer.parseInt(resultado);
-				if(resultadoInt>1||resultadoInt==0) {
-					Tablero tableroAux = new Tablero(args[2]);
+				if(resultadoInt>1||resultadoInt==0) { //Mira si el resultado lo podemos dibujar (se pueden todos menos un string ilegal)
+					Tablero tableroAux = new Tablero(args[2]); //Crea un tablero, lo añade a la lista y lo marca como dibujable
 					tableroAux.generarVehiculos();
 					tableroAux.definirOrientacionVehiculosTablero();
 					tableros.add(tableroAux);
