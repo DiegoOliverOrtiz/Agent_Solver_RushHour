@@ -68,10 +68,11 @@ public class ControlVisual {
 			////// QUESTION
 			//////
 			else if(args[0].equals("question")) {//Si no es la opción verify vemos si es question
+				//Revisa los posibles comandos de question con algunas comprobaciones de longitud
 				if((args[3].equals("--whereis")&&args.length>4)||(args[3].equals("--what")&&args.length>4)||(args[3].equals("--size")&&args.length>4)||args[3].equals("--howmany")||args[3].equals("--goal")) {
 					ControlTablero controlAux = new ControlTablero();
 					int valido=controlAux.verificarTablero(args[2]);
-					if(valido==0) {
+					if(valido==0) { //Verificamos si es un tablero válido y si lo es lo dibujamos
 						Tablero tableroAux = new Tablero(args[2]);
 						tableroAux.generarVehiculos();
 						tableroAux.definirOrientacionVehiculosTablero();
@@ -79,16 +80,16 @@ public class ControlVisual {
 						dibujable=true;
 					}		
 				}
-				else if(args[3].equals("--move")&&args.length>4) {
+				else if(args[3].equals("--move")&&args.length>4) { //Parecido para move
 					ControlTablero controlAux = new ControlTablero();
-					int validoInput=controlAux.verificarTablero(args[2]);
-					int validoResultado=controlAux.verificarTablero(resultado);
-					if(validoInput==0&&validoResultado==0) {
-						Tablero tableroAux = new Tablero(args[2]);
+					int validoInput=controlAux.verificarTablero(args[2]); //Verificamos si la semilla original es valida
+					int validoResultado=controlAux.verificarTablero(resultado); //Verificamos que la semilla resultante es válida
+					if(validoInput==0&&validoResultado==0) { //Si ambas lo son
+						Tablero tableroAux = new Tablero(args[2]); //Se genera y añade un tablero para la semilla original
 						tableroAux.generarVehiculos();
 						tableroAux.definirOrientacionVehiculosTablero();
 						tableros.add(tableroAux);
-						Tablero tableroAux2 = new Tablero(resultado);
+						Tablero tableroAux2 = new Tablero(resultado); //Se genera y añade un tablero para el resultado con los coches movidos
 						tableroAux2.generarVehiculos();
 						tableroAux2.definirOrientacionVehiculosTablero();
 						tableros.add(tableroAux2);
@@ -100,42 +101,36 @@ public class ControlVisual {
 			////// SUCCESSORS Y SOLVER
 			//////
 			else if((args[0].equals("successors")&&args[1].equals("-s")&&args.length>2)||(args[0].equals("solver")&&args[1].equals("-s")&&args.length>3)) {
-				ControlTablero controlAux = new ControlTablero();
-				if(controlAux.verificarTablero(args[2])==0) {
-					String[] separados = resultado.split("\n");
-					Tablero tableroAux = new Tablero(args[2]);
+				ControlTablero controlAux = new ControlTablero(); //Nuevo control
+				if(controlAux.verificarTablero(args[2])==0) { //Verificamos si la cadena original es válida
+					String[] separados = resultado.split("\n"); //Separa el output según los saltos de línea
+					Tablero tableroAux = new Tablero(args[2]); //Crea un tablero para el inpput original
 					tableroAux.generarVehiculos();
 					tableroAux.definirOrientacionVehiculosTablero();
-					tableros.add(tableroAux);
-					int tamanoSeparados=0;
-					if(args.length==6) {
-						if(args[5].equals("--stats"))
-							tamanoSeparados=separados.length-6;
+					tableros.add(tableroAux); //Lo define y añade
+					int tamanoSeparados=0; //Valor para descartar stats si se han realizado en el solver
+					for(int i=0;i<args.length;i++) { //Buscamos si nos han pedido stats
+						if(args[i].equals("--stats"))
+							tamanoSeparados=separados.length-6; //Si hay stats ignoramos las 6 últimas líneas
 						else
 							tamanoSeparados=separados.length;
 					}
-					else if(args.length==7) {
-						if(args[6].equals("stats"))
-							tamanoSeparados=separados.length-6;
-						else
-							tamanoSeparados=separados.length;
-					}
-					for(int i=0;i<tamanoSeparados;i++) {
+					for(int i=0;i<tamanoSeparados;i++) { //Quitamos le primer y último caracter de todos (es el corchete entre el que van)
 						separados[i]=separados[i].substring(1, separados[i].length() - 1);
 					}
-					if(args[0].equals("successors")) {
-						for(int i=0;i<separados.length;i++) {
-							String[] sucesoresSeparados=separados[i].split(",");
-							if(sucesoresSeparados.length==3) {
-								Tablero tableroAux2 = new Tablero(sucesoresSeparados[1]);
-								tableroAux2.generarVehiculos();
+					if(args[0].equals("successors")) { //Si es sucesores
+						for(int i=0;i<separados.length;i++) { //Para cada sucesore
+							String[] sucesoresSeparados=separados[i].split(","); //Para cada uno los separa
+							if(sucesoresSeparados.length==3) { //Mira si esun tamaño válido
+								Tablero tableroAux2 = new Tablero(sucesoresSeparados[1]); //Toma el valor que corresponde a la semilla lo genera como tablero y añade para dibujar
+								tableroAux2.generarVehiculos(); //Genera y define un tablero y lo añade a la lista de los que se deben dibujar
 								tableroAux2.definirOrientacionVehiculosTablero();
 								tableros.add(tableroAux2);
 								dibujable=true;
 							}
 						}
 					}
-					else if(args[0].equals("solver")) {
+					else if(args[0].equals("solver")) { //Si es solver hace lo mismo que sucesores pero varía los valores por las posiciones y tamaño del contenido
 						for(int i=1;i<separados.length;i++) {
 							String[] solverSeparados=separados[i].split(",");
 							if(solverSeparados.length==8) {
@@ -148,64 +143,73 @@ public class ControlVisual {
 						}
 					}
 					
-				} //Vemos si es successors y si lo es lo ejecuta
-				
-				if(dibujable)
-					mostrarTablero(tableros, args);
+				} 
 			}
+			//Al final del todo vemos si lo puede dibujar (hemos pasado contenido legal y lo dibuja)
+			if(dibujable)
+				mostrarTablero(tableros, args);
 		}
-		catch(Exception e) {
+		catch(Exception e) { //Excepción por si algo sale mal o no he controlado algo
 			System.out.println("Error al dibujar el tablero.");
 		}
 	}
 	
+	/* Mostrar tablero se encarga de la visualización del tablero y la adición de los botones para las visualizaciones que lo requieran
+	 * resumiendo su funcionamiento: genera un frame, le da propiedades y mete dentro un panel con la instrucción metida, y otro panel
+	 * dentro donde se verán los coches, en caso de que haya dos estados o más añade botones para poder navegar a través de los paneles
+	 * finalmente hace todo visible
+	 * Parametros de entrada:
+	 * 	tableros: lista de tableros que tendremos que representar
+	 * 	args: argumentos del programa para mostrarlos en la label
+	 * */
 	private void mostrarTablero(ArrayList<Tablero> tableros, String[] args) {
 		JFrame frame = new JFrame("Tablero de juego."); //Creamos el frame para mostrar el contenido visual
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Indicamos que se saldrá del frame al cerrarlo 
         frame.setSize(800, 600); //Indicamos el tamaño de nuestro frame
         JPanel panelPrincipal = new JPanel(new BorderLayout()); //Añadimos nuestro frame principal
         // Etiqueta para mostrar el metodo solicitado
-        String argumentos="Estados de: ";
+        String argumentos="Estados de: "; //String para la etiqueta concatenando los args para mostrarlos todos
         for(int i=0;i<args.length;i++) {
         	argumentos=argumentos+args[i]+" ";
         }
-        JLabel etiqueta = new JLabel(argumentos, SwingConstants.CENTER);
-        etiqueta.setFont(new Font("Arial", Font.PLAIN, 14));
-        etiqueta.setVerticalAlignment(SwingConstants.TOP);
-        panelPrincipal.add(etiqueta, BorderLayout.NORTH);
-        JPanel panelVehiculos = new JPanel(new GridLayout(6, 6, 10, 10));
-        generarPanelVehiculos(tableros.get(iteracion), panelVehiculos);
-        panelPrincipal.add(panelVehiculos); //Una vez hechas todas las iteraciones añadimos el panel con los coches
-        
+        JLabel etiqueta = new JLabel(argumentos, SwingConstants.CENTER); //Añadimos la etiqueta para que el usuario vea que representa el tablero
+        etiqueta.setFont(new Font("Arial", Font.PLAIN, 14)); //Le damos fuente y tamaño
+        etiqueta.setVerticalAlignment(SwingConstants.TOP); //Le ponemos la alineación
+        panelPrincipal.add(etiqueta, BorderLayout.NORTH); //Lo añadimos al frame arriba del todo
+        JPanel panelVehiculos = new JPanel(new GridLayout(6, 6, 10, 10)); //Generamos el panel donde irán los vehículos indicandole que tiene que tener 6 filas y 6 columnas
+        generarPanelVehiculos(tableros.get(iteracion), panelVehiculos); //Generamos el primer tablero
+        panelPrincipal.add(panelVehiculos); //Añadimos al representación de dicho tablero
         if(tableros.size()>=2) { //Solo si recibimos al menos dos tableros podremos movernos entre ellos
 	        // Panel para las flechas de navegación
-	        JPanel panelNavegacion = new JPanel(new FlowLayout());
-	        JButton botonAtras = new JButton("<");
-	        JButton botonSiguiente = new JButton(">");
-	        JButton botonPrimero = new JButton("<<");
-	        JButton botonUltimo = new JButton(">>");
+	        JPanel panelNavegacion = new JPanel(new FlowLayout()); //Añadimos un panel de navegación
+	        //Declaramos 4 botones
+	        JButton botonAtras = new JButton("<"); //Ir atrás un estado
+	        JButton botonSiguiente = new JButton(">"); //Ir adelante un estado
+	        JButton botonPrimero = new JButton("<<"); //Ir al primer estado
+	        JButton botonUltimo = new JButton(">>"); //Ir al último estado
 	        // Etiqueta para mostrar la "iteracion"
-	        JLabel etiquetaIt = new JLabel("Estado: 0", SwingConstants.CENTER);
-	        etiquetaIt.setFont(new Font("Arial", Font.PLAIN, 14));
-	        etiquetaIt.setVerticalAlignment(SwingConstants.TOP);
-	        panelNavegacion.add(botonPrimero);
+	        int numEstados=tableros.size()-1;
+	        JLabel etiquetaIt = new JLabel("Estado: 0/"+numEstados, SwingConstants.CENTER); //Ponemos la etiqueta donde se nos indicará en que estado estamos, ponemos que de primeras es la 0
+	        etiquetaIt.setFont(new Font("Arial", Font.PLAIN, 14)); //Le indicamos la fuente
+	        etiquetaIt.setVerticalAlignment(SwingConstants.TOP); //Alineación de la fuente
+	        panelNavegacion.add(botonPrimero); //Añadimos los botones en el orden que queremos que aparezcan en nuestra interfaz
 	        panelNavegacion.add(botonAtras);
 	        panelNavegacion.add(etiquetaIt, BorderLayout.NORTH);
 	        panelNavegacion.add(botonSiguiente);
 	        panelNavegacion.add(botonUltimo);
-	        panelPrincipal.add(panelNavegacion, BorderLayout.SOUTH);
+	        panelPrincipal.add(panelNavegacion, BorderLayout.SOUTH); //Añadimos el panel de navegación
 	        
 	        //Funciones de los botones
-	        botonAtras.addActionListener(e -> {
-	            if (iteracion > 0) {
-	                iteracion--;
-	                generarPanelVehiculos(tableros.get(iteracion), panelVehiculos);
-	                int tamano=tableros.size()-1;
+	        botonAtras.addActionListener(e -> { //Son action listeners
+	            if (iteracion > 0) { //Comprobantes para no salirnos del tamaño del tablero
+	                iteracion--; //Si es ir uno atrás restamos uno a la iteracion
+	                generarPanelVehiculos(tableros.get(iteracion), panelVehiculos); //Modificamos el panel de vehículos (más adelante se explica como)
+	                int tamano=tableros.size()-1; //Cambiamos la etiqueta que se muestra
 	                etiquetaIt.setText("Estado: "+iteracion+"/"+tamano);
 	               
 	            }
 	        });
-	        botonSiguiente.addActionListener(e -> {
+	        botonSiguiente.addActionListener(e -> { //Lo mismo con los demás botones
 	            if (iteracion < tableros.size()-1) {
 	            	iteracion++;
 	                generarPanelVehiculos(tableros.get(iteracion), panelVehiculos);
@@ -213,7 +217,7 @@ public class ControlVisual {
 	                etiquetaIt.setText("Estado: "+iteracion+"/"+tamano);
 	            }
 	        });
-	        botonPrimero.addActionListener(e -> {
+	        botonPrimero.addActionListener(e -> { //El de primero fuerza la iteración a ser la primera
 	            if (iteracion > 0) {
 	                iteracion=0;
 	                generarPanelVehiculos(tableros.get(iteracion), panelVehiculos);
@@ -221,7 +225,7 @@ public class ControlVisual {
 	                etiquetaIt.setText("Estado: "+iteracion+"/"+tamano);
 	            }
 	        });
-	        botonUltimo.addActionListener(e -> {
+	        botonUltimo.addActionListener(e -> { //El de último fuerza la iteración a ser la última
 	            if (iteracion < tableros.size()-1) {
 	                iteracion=tableros.size()-1;
 	                generarPanelVehiculos(tableros.get(iteracion), panelVehiculos);
@@ -230,23 +234,37 @@ public class ControlVisual {
 	            }
 	        });
         }
-        frame.add(panelPrincipal); //Añadimos al panel principal
+        frame.add(panelPrincipal); //Añadimos al panel principal al frame
         frame.setVisible(true); //Lo hacemos visible
         
 	}
 	
+	/* generarPanelVehiculos más que generar se encarga de modificar, ¿por qué? Pues porque le pasamos la referencia a panelVehiculos
+	 * cuando pasamos un objeto a un método realmente no estamos pasando el objeto como tal, solo la referencia a dicho objeto ¿Y esto
+	 * de qué nos sirve? Pues nos es bastante útil porque al ser la referencia podemos cambiar los parametros de panelVehiculos desde aquí
+	 * lo que hará que se cambie para todo (al final llamamos al mismo objeto) y por tanto al modificar algo aquií se mostrará en el visual.
+	 * Respecto al funcionamiento se resume en: elimina todo el contenido del panel, le asigna a todos los vehículos su color correspondiente
+	 * recorre ahora toda la matriz creando etiquetas de colores que servirán para representar si una casilla la ocupa un coche o nada y por
+	 * último añade la nueva etiqueta al frame
+	 * 
+	 * Parametros:
+	 * 	tablero: tablero a representar
+	 * 	panelVehiculos: el panel donde irán representados los coches
+	 * */
 	private void generarPanelVehiculos(Tablero tablero, JPanel panelVehiculos) {
-		panelVehiculos.removeAll();
-		ArrayList<Vehiculo> vehiculos = tablero.getVehiculos(); 
-    	char[] nombresVehiculos =new char[vehiculos.size()];
-    	for(int i=0;i<vehiculos.size();i++) {
+		panelVehiculos.removeAll(); //Elimina todo lo que pueda tener el frame (mantiene su estructura)
+		ArrayList<Vehiculo> vehiculos = tablero.getVehiculos(); //Guarda todos los vehiculos del tablero
+    	char[] nombresVehiculos =new char[vehiculos.size()]; //Generamos un char del tamaño de los vehículos para guardar sus nombres
+    	//Esto que vamos a hacer ahora es con el fin de que siempre se cargue el mismo color a todos los vehículos sin tener que definirlo manualmente
+    	for(int i=0;i<vehiculos.size();i++) { //Guardamos los nombres
     		nombresVehiculos[i]=vehiculos.get(i).getNombre();
     	}
-    	Arrays.sort(nombresVehiculos);
-    	for(int i=0;i<nombresVehiculos.length;i++) {
-    		for(int j=0;j<vehiculos.size();j++) {
+    	Arrays.sort(nombresVehiculos); //Los organizamos alfabéticamente
+    	for(int i=0;i<nombresVehiculos.length;i++) { //Recorremos los nombres
+    		for(int j=0;j<vehiculos.size();j++) { //Buscamos el vehículo que corresponda
     			if(nombresVehiculos[i]==vehiculos.get(j).getNombre())
-    				vehiculos.get(j).setColorVehiculo(listaColores[i]);
+    				vehiculos.get(j).setColorVehiculo(listaColores[i]); //Si coinciden le asignamos el color correspondiente
+    			//Se hace así porque al ordenarlos alfabeticamente mantienen siempre el mismo orden estén donde estén en el tablero
     		}
     	}
 		for (int i = 0; i < tablero.getMatriz().length; i++) { //Bucle para recorrer la matriz que representa nuestro tablero
