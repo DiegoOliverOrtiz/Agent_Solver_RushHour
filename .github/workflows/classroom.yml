@@ -10,7 +10,7 @@ permissions:
 jobs:
   run-autograding-tests:
     #env:
-    # TESTS_ACTIVOS: '["T1", "T2"]'  # Configura aquí qué tests ejecutar
+    # TESTS_ACTIVOS: '["T1", "T2"]'  #  Configura aquí qué tests ejecutar
 
     runs-on: ubuntu-latest
     if: github.actor != 'github-classroom[bot]'
