@@ -254,7 +254,7 @@ jobs:
           # Convertir ["T1", "T2", "T3"] a "T1, T2, T3"
           RUNNERS=$(echo "$TESTS" | jq -r 'join(", ")')
           echo "list=$RUNNERS" >> $GITHUB_OUTPUT
-          echo "✅ Runners activos: $RUNNERS"
+          echo "✅ Runners activos:$RUNNERS"
 
       - name: Autograding Reporter
         if: always()
