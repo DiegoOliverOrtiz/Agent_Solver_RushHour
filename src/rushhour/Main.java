@@ -20,7 +20,7 @@ public class Main {
 				int verify=tablero.verificarTablero(args[2]); //Si tiene verify -s <parametro> ya comprueba el resto en la función de crearTablero
 				if(verify!=-1) { //Si da un retorno que no sea el -1 muestra los errores pedidos en el campus
 					System.out.println(verify);
-					visual.crearVisual(verify+"", args);
+					//visual.crearVisual(verify+"", args);
 				}
 				else //Si es el error -1 muestra el siguiente mensaje (se hace así porque este error no está indicado en el campus)
 					System.out.println("Tablero correcto, pero el vehículo rojo (A) no es un coche (longitud 2).");
@@ -31,7 +31,7 @@ public class Main {
 			else if(args[0].equals("question")&&args[1].equals("-s")&&args.length>3) { //Si no es la opción verify vemos si es question
 				String resultadoConsulta=tablero.preguntasTablero(args);
 				System.out.println(resultadoConsulta); //Lo ejecutamos si lo es
-				visual.crearVisual(resultadoConsulta, args);
+				//visual.crearVisual(resultadoConsulta, args);
 			}
 			//////
 			////// SUCCESSORS
@@ -39,17 +39,17 @@ public class Main {
 			else if(args[0].equals("successors")&&args[1].equals("-s")) {//Vemos si es successors y si lo es lo ejecuta
 					String resultadoConsulta=tablero.sucesoresTablero(args[2]);
 					System.out.println(resultadoConsulta);
-					visual.crearVisual(resultadoConsulta, args);
+					//visual.crearVisual(resultadoConsulta, args);
 			}
 			
 			//////
-			////// SOLVER - WIP
+			////// SOLVER
 			//////
 			else if(args[0].equals("solver")&&args[1].equals("-s")) {
 				Solver solucionador = new Solver();
 				String resultadoConsulta=solucionador.realizarBusqueda(args);
 				System.out.println(resultadoConsulta);
-				visual.crearVisual(resultadoConsulta, args);
+				//visual.crearVisual(resultadoConsulta, args);
 			}
 			
 			//////
