@@ -276,7 +276,7 @@ public class ControlVisual {
             		if(vehiculos.get(k).getNombre()==tablero.getValorMatriz(i, j)) { //...El de la posición del tablero actual, en caso afirmativo rompemos el bucle y guardamos sus datos
             			etiqueta=etiqueta+vehiculos.get(k).getNombre();
             			colorCoche=vehiculos.get(k).getColorVehiculo();
-            			if(vehiculos.get(k).getNombre()=='A') { //condiciones especificas para el coche rojo
+            			if(vehiculos.get(k).getNombre()=='A') { //Condiciones especificas para el coche rojo
             				colorFuente=Color.BLACK;
             				colorCoche=Color.RED;
             			}
@@ -284,7 +284,7 @@ public class ControlVisual {
             		}
             	}
                 if((i==2&&j==5)&&tablero.getValorMatriz(i, j)=='o') { //Para ver donde está la meta
-            		etiqueta=etiqueta+"META";
+            		etiqueta=etiqueta+"META"; //Le ponemos una etiqueta manualmente
             		colorFuente=Color.RED;
             	}
                 JLabel celda = new JLabel(etiqueta, SwingConstants.CENTER); //Creamos una etiqueta para representar cada celda de la matriz
@@ -295,7 +295,7 @@ public class ControlVisual {
                 panelVehiculos.add(celda);   //Por último añadimos la celda creada al panel de los coches 
             }
         }
-		panelVehiculos.revalidate();
+		panelVehiculos.revalidate(); //Esto sirve para repintarlo
 	    panelVehiculos.repaint();
 	}
 	
