@@ -94,35 +94,43 @@ public class Solver {
 		return resultado;
 	}
 
+	/* resolución hace el algoritmo de búsqueda para encontrar nuestra solución, el algoritmo es genérico por lo que sirve para cualquier estrategia
+	 * Parametros-> semilla: es el string inicial que representa nuestro primer tablero y por tanto nodo, activarStats: boolean que nos indica si al final añadiremos las estadisticas o no
+	 * estrategia: string que nos indica la estrategia a realizar, profundidadPermitida: profundidad maxima para DFS
+	 * Retorno: un string con o la solución ordenada y los stats si se han activado
+	 * */	
 	public String resolucion(String semilla, boolean activarStats, String estrategia, int profundidadPermitida) {
 		//Definicion de variables
 		String solucion= "";
-		boolean solucionEncontrada=false;
-		double tiempoEjecucion=0;
+		boolean solucionEncontrada=false; //Variable para ver si hemos encontrado la solución
+		double tiempoEjecucion=0; //Variablespara las stats
 		int nodosGenerados=0;
 		int nodosPodados=0;
 		int nodosExpandidos=0;
 		int profundidadMaxima=0;
-		PriorityQueue<Nodo> frontera = new PriorityQueue<>();
-		ArrayList<Nodo> listaCerrada = new ArrayList<>();
+		PriorityQueue<Nodo> frontera = new PriorityQueue<>(); //Cola con prioridad para la frontera
+		ArrayList<Nodo> listaCerrada = new ArrayList<>(); //Lista para los nodos que hemos explorado
+		
 		//Primer nodo de todos
-		Tablero tableroInicial = new Tablero(semilla);
-		tableroInicial.generarVehiculos();
+		Tablero tableroInicial = new Tablero(semilla); //Creamos un tablero a partir de nuestra semilla inicial
+		tableroInicial.generarVehiculos(); //Lo inicializamos con todos sus vehiculos y orientaciones
 		tableroInicial.definirOrientacionVehiculosTablero();
-		int id=0;
-		frontera.add(generarNodoConEstrategia(estrategia, id,"none", "___",tableroInicial,0,0,0)); //Sin pasarle el valor, lo resurlve frontera
-		nodosGenerados++;
-		double tiempoInicio = System.nanoTime();
-		while(solucionEncontrada==false&&frontera.size()>0) {
-			Nodo nodoAnalizar = frontera.poll();
-			boolean podar = false;
-			for(int i=0;i<listaCerrada.size();i++) {
-				if(nodoAnalizar.getEstado().getSemilla().equals(listaCerrada.get(i).getEstado().getSemilla())&&(Math.abs(nodoAnalizar.getValor())>=Math.abs(listaCerrada.get(i).getValor()))) {
-					podar=true;
+		int id=0; //Declaramos id (será usado más adelante), creamos el nodo y lo añadimos a la frontera
+		frontera.add(generarNodoConEstrategia(estrategia, id,"none", "___",tableroInicial,0,0,0)); //Sin pasarle el valor, lo resuelve el metodo generarNodoConEstrategia
+		nodosGenerados++; //Incrementamos las stats de los nodosGenerados
+		double tiempoInicio = System.nanoTime(); //El tiempo que tarda el algoritmo se toma antes del bucle según las instrucciones
+		while(solucionEncontrada==false&&frontera.size()>0) { //El búcle se realiza mientras no haya solución y sigamos teniendo nodos para analizar
+			Nodo nodoAnalizar = frontera.poll(); //Toma el primer nodo de la frontera (al ser cola con prioridad irán en el orden correspondiente de cada tipo de búsqueda)
+			boolean podar = false; //variable para ver si podamos, inicializada a false (asumimos que no podamos)
+			for(int i=0;i<listaCerrada.size();i++) { //Para todos los elementos que hemos analizado
+				//Vemos si tenemos un nodo mejor que el que estamos analizando
+				if(nodoAnalizar.getEstado().getSemilla().equals(listaCerrada.get(i).getEstado().getSemilla())&&(Math.abs(nodoAnalizar.getValor())>=Math.abs(listaCerrada.get(i).getValor()))) { //Muy muy importante el valor absoluto porque dfs nos lo manda en negativo
+					podar=true; //Si es peor lo podamos y salimos del búcle, no necesitamos buscar más porque con uno peor ya sabemos que hemos explorado un camino mejor
 					i=listaCerrada.size()+1;
 				}
 				else if(nodoAnalizar.getEstado().getSemilla().equals(listaCerrada.get(i).getEstado().getSemilla())&&(Math.abs(nodoAnalizar.getValor())<Math.abs(listaCerrada.get(i).getValor())))
-					listaCerrada.remove(i);
+					listaCerrada.remove(i); //Si encuentra un nodo peor elimina el nodo peor para optimizar el bucle, sigue en el búcle porque puede que haya un nodo mejor (y haya que podar) o incluso haya más nodos peores que podamos eliminar para optimizar
+				//Nos podemos permitir eliminarlos porque son nodos que no van a llegar a la solución nunca
 			}
 			
 			if(!podar) {

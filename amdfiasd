@@ -1,0 +1,74 @@
+* [33m12b8422[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mT3[m[33m, [m[1;31morigin/T3[m[33m)[m Actualizando contenido, solver, comentarios y errores de rama
+* [33m5a8907c[m Ajustes menores y comentarios
+* [33m66ddaf3[m Ajustes menores y comentarios
+[31m|[m * [33m1416da3[m[33m ([m[1;35mrefs/stash[m[33m)[m On main: Apañando ramas
+[31m|[m[31m/[m[33m|[m 
+[31m|[m * [33m43d31dc[m index on main: e96b60e Realizar tests
+[31m|[m[31m/[m  
+[31m|[m *   [33m317978e[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #4 from SI2024-ESI/main
+[31m|[m [34m|[m[35m\[m  
+[31m|[m [34m|[m * [33m0c7fe36[m Update autograding workflow
+[31m|[m * [35m|[m [33md6bed52[m Merge pull request #3 from SI2024-ESI/main
+[31m|[m [36m|[m[35m\[m[35m|[m 
+[31m|[m [36m|[m * [33m40df5d6[m Update autograding workflow
+[31m|[m * [1;31m|[m [33m6b88176[m Merge pull request #2 from SI2024-ESI/main
+[31m|[m[31m/[m[1;31m|[m [1;31m|[m 
+[31m|[m [1;31m|[m[1;31m/[m  
+[31m|[m * [33m497dfe0[m Update autograding workflow
+[31m|[m * [33m9e85cc1[m Update autograding workflow
+* [1;33m|[m [33me96b60e[m[33m ([m[1;32mmain[m[33m)[m Realizar tests
+* [1;33m|[m [33m725a79c[m Realizar tests
+* [1;33m|[m [33m9c4f278[m Más comentarios y mini fix en el visual
+* [1;33m|[m [33m87f7bcb[m Emepezando comentarios
+* [1;33m|[m [33m8f5df18[m Hito 3 implementado, pendiente de mejoras y comentarios
+* [1;33m|[m [33mc63ab55[m No hace falta la clase frontera
+* [1;33m|[m [33ma1b5a1e[m UCS hecho
+* [1;33m|[m [33m22e3a78[m Empezando menú metodo universal
+* [1;33m|[m [33m49a0442[m Avanzando en el metodo universal
+* [1;33m|[m [33m2497c9f[m Empezando AHORA SÍlas pruebas
+* [1;33m|[m [33m9a3cc09[m Más progreso al método común
+* [1;33m|[m [33ma96ffce[m Avanzando por tener métodos universales
+* [1;33m|[m [33m6ffee0d[m compareTo implementado para UCS
+* [1;33m|[m [33m02c5447[m SOY DIOS, BFS y DFS 100% funcionales y fixeados
+* [1;33m|[m [33mb26d233[m Guardar cambios por si la lio mucho
+* [1;33m|[m [33m16734c4[m Progresando con DFS, funciona pero mal
+* [1;33m|[m [33me4efd8f[m Segundo test de códgio fuera de .git
+* [1;33m|[m [33md1d750d[m Test de códgio fuera de .git
+* [1;33m|[m [33m56a21d5[m Movido el codigo de .git afuera
+* [1;33m|[m [33m631f2bc[m Avanzando DFS
+* [1;33m|[m [33m5719ae6[m BFS funcional
+* [1;33m|[m [33mba309b2[m BFS casi listo
+* [1;33m|[m [33mec5d7b6[m Empezando algoritmos de busqueda
+* [1;33m|[m [33m77c2a1e[m Visualización implementada lista
+* [1;33m|[m [33m6c3be6d[m Sucesores dibujables pero con bug de color
+* [1;33m|[m [33m5c0c38b[m Rework del visual casi listo
+* [1;33m|[m [33m3c2edd7[m Reajustando el visual para que sea funcional en un futuro
+* [1;33m|[m [33m4dd6a8e[m Comprobación creación rama T3
+* [1;33m|[m [33m49fa3eb[m[33m ([m[1;31morigin/T2[m[33m, [m[1;32mT2[m[33m)[m Comentarios finalizados, T2 finalizada
+* [1;33m|[m [33m9008d8d[m Empezando a comentar T2, optimización y eliminación temporal visual
+* [1;33m|[m [33m2665693[m Depurado de código y añadido successor
+* [1;33m|[m [33m78b8501[m Reestructurado el sistema de vehiculos + inicio succesors
+* [1;33m|[m [33m01f4e7c[m Preparando para añadir la funcion sucesores
+* [1;33m|[m [33mb656579[m Función --move por fin funciona y añadida
+* [1;33m|[m [33m9f44e80[m Reestructuración código con metodo para buscar coches
+* [1;33m|[m [33m632ae88[m Reestructuración código e incio --move
+* [1;33m|[m [33m383f0af[m Renombrado de coche a vehiculos para vehiculos
+* [1;33m|[m [33me315067[m .jar subido con --goal
+* [1;33m|[m [33mcbe6eaa[m test de rama
+* [1;33m|[m [33m8da77a6[m[33m ([m[1;31morigin/T1[m[33m, [m[1;32mT1[m[33m)[m Versión final del entregable, comentarios y retoques menores
+* [1;33m|[m [33me60a286[m Comentarios y más comentarios y más comentarios
+* [1;33m|[m [33m22ba8a7[m Más comentarios
+* [1;33m|[m [33m75a2682[m Comentando y aclarando clases
+* [1;33m|[m [33ma3354de[m Añadido comprobación vehículo rojo es un coche
+* [1;33m|[m [33m2ca70fc[m Bug fix tamaño del String
+* [1;33m|[m [33m189e079[m Bug fix y empezando a comentar/organizar
+* [1;33m|[m [33m7cf4a0e[m Le añadí una clase para poder ver visualmente los errores (quitar luego)
+* [1;33m|[m [33m89ed608[m Comando question 100% implementado
+* [1;33m|[m [33m5a8fae5[m Corrección de errores, prevención de excepciones e inicio de question
+* [1;33m|[m [33mf16c966[m Ya hace el verify
+* [1;33m|[m [33ma818583[m Trabajo del viernes
+* [1;33m|[m [33m0b0520d[m pruebaDEconexión
+* [1;33m|[m [33mf1f245b[m Setting up GitHub Classroom Feedback
+* [1;33m|[m [33mdba1550[m[33m ([m[1;31morigin/feedback[m[33m)[m GitHub Classroom Feedback
+[1;33m|[m[1;33m/[m  
+* [33m517643c[m Initial commit
