@@ -1,4 +1,4 @@
-package rushhour; //v0.3.2
+package rushhour; //v0.3.3
 
 /* Descripción: 
  * 	Clase principal del programa

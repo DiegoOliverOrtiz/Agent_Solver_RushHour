@@ -133,52 +133,56 @@ public class Solver {
 				//Nos podemos permitir eliminarlos porque son nodos que no van a llegar a la solución nunca
 			}
 			
-			if(!podar) {
-				Tablero tableroNodo = nodoAnalizar.getEstado();
+			if(!podar) { //Si no hemos podado el nodo
+				Tablero tableroNodo = nodoAnalizar.getEstado(); //Creamos un tablero a partir del nodo
 				//VER SI ES SOLUCION
-				String[] goal = new String[4];
+				String[] goal = new String[4]; //Gestionamos los parametros para ver si es objetivos
 				goal[0]="question";
 				goal[1]="-s";
 				goal[2]=tableroNodo.getSemilla();
 				goal[3]="--goal";
-				if(control.preguntasTablero(goal).equals("TRUE")) {
-					solucionEncontrada=true;
-					listaCerrada.add(nodoAnalizar);
+				if(control.preguntasTablero(goal).equals("TRUE")) { //Aprovechamos que tenemos creado goal en question, así que lo invocamos y miramos si es TRUE
+					solucionEncontrada=true; //Si lo es marcamos la solución como encontrada
+					listaCerrada.add(nodoAnalizar); //Lo añadimos a la lista cerrada para luego poder realizar el camino hasta el nodo inicial
 				}
-				else if(estrategia.equals("dfs")&&nodoAnalizar.getProfundidad()>=profundidadPermitida) {
-					nodosPodados++;
+				else if(estrategia.equals("dfs")&&nodoAnalizar.getProfundidad()>=profundidadPermitida) { //Si la estrategia es dfs vemos si podamos por produndidad
+					nodosPodados++; //Si lo hacemos actualizamos el contador
 				}
-				else {
-					listaCerrada.add(nodoAnalizar);
-					nodosExpandidos++;
-					String sucesores = control.sucesoresTablero(tableroNodo.getSemilla());
-					String[] separados = sucesores.split("\n");
-					for(int i=0;i<separados.length;i++) {
-						separados[i]=separados[i].substring(1, separados[i].length() - 1);
-						String[] sucesoresSeparados=separados[i].split(",");
-						Tablero tableroSucesor = new Tablero(sucesoresSeparados[1]);
-						tableroSucesor.generarVehiculos();
+				else { //Si no es objetivo ni se ha podado procedemos a expandir
+					listaCerrada.add(nodoAnalizar); //Añadimos el nodo a la lista cerrada (donde están los nodos explorados)
+					nodosExpandidos++; //Actualizamos el contado de expandidos
+					String sucesores = control.sucesoresTablero(tableroNodo.getSemilla()); //generamos los sucesores ayudandonos del metodo creado para eso
+					String[] separados = sucesores.split("\n"); //separamos la cadena (recordemos que successors nos devuelve una sola cadena con todos los sucesores)
+					for(int i=0;i<separados.length;i++) { //Para cada elemento (sucesor)
+						separados[i]=separados[i].substring(1, separados[i].length() - 1); //Quitamos los corchetes
+						String[] sucesoresSeparados=separados[i].split(","); //Separamos los elementos (Movimiento, cadena resultante, coste)
+						Tablero tableroSucesor = new Tablero(sucesoresSeparados[1]); //Generamos un tablero con la cadena resultante
+						tableroSucesor.generarVehiculos(); //Definimos sus vehiculos y orientaciones
 						tableroSucesor.definirOrientacionVehiculosTablero();
-						int heuristica=0;
-						id++;
-						if(nodoAnalizar.getProfundidad()+1>profundidadMaxima)
+						int heuristica=0; //Para la heuristica por ahora es 0, en un futuro llamará a una función que le asigne un valor
+						id++; //Actualizamos el id
+						if(nodoAnalizar.getProfundidad()+1>profundidadMaxima) //Y actualizamos la profundidad maxima alcanzada si es mayor que la guardada hasta el momento
 							profundidadMaxima++;
+						//Generamos el nuevo nodo en función de la estrategia con la función y lo guardamos en la frontera, se ordenará solo gracias a ser una cola con prioridad
 						frontera.add(generarNodoConEstrategia(estrategia,id,nodoAnalizar.getId()+"", sucesoresSeparados[0],tableroSucesor,nodoAnalizar.getCosto()+Integer.parseInt(sucesoresSeparados[2]),nodoAnalizar.getProfundidad()+1,heuristica));
-						nodosGenerados++;
+						nodosGenerados++; //Actualizamos el número de nodos generados
 					}
 				}
 			}
 			else
-				nodosPodados++;
+				nodosPodados++; //En caso de que podemos actualizamos el contador 
 		}
-		tiempoEjecucion = (System.nanoTime()-tiempoInicio)/1000; //Entre 1000 para que sea microsegundos
-		if(solucionEncontrada) {
-			solucion=devolverSolucion(listaCerrada);
-			if(activarStats) {
+		tiempoEjecucion = (System.nanoTime()-tiempoInicio)/1000; //Finalizamos el conteo de tiempo y dividimos entre 1000 para que sea microsegundos
+		if(solucionEncontrada) { //Si hemos encontrado una solución
+			solucion=devolverSolucion(listaCerrada); //Llamamos a devolver solución para que nos busque el camino y lo organice
+			if(activarStats) { //Y si ha activado las stats las añadimos al final
 				solucion=solucion+"\n"+"ET: "+tiempoEjecucion+"\n"+"TN: "+nodosGenerados+"\n"+"EN: "+nodosExpandidos+"\n"+"CN: "+nodosPodados+"\n"+"DF: "+profundidadMaxima+"\n";
 			}
 		}
-		else
+		//En caso de no tener solución damos un mensaje de advertencia
+		else if(!solucionEncontrada) 
+			solucion="El tablero no tiene solución para la profundidad: "+profundidadPermitida; //Mensaje especial para profundidad para que pruebe otros valores
+		else 
 			solucion="El tablero no tiene solución.";
 		return solucion;
 	}
