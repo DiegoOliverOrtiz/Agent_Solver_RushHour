@@ -100,6 +100,7 @@ public class ControlVisual {
 			//////
 			////// SUCCESSORS Y SOLVER
 			//////
+			
 			else if((args[0].equals("successors")&&args[1].equals("-s")&&args.length>2)||(args[0].equals("solver")&&args[1].equals("-s")&&args.length>3)) {
 				ControlTablero controlAux = new ControlTablero(); //Nuevo control
 				if(controlAux.verificarTablero(args[2])==0) { //Verificamos si la cadena original es válida
@@ -110,8 +111,10 @@ public class ControlVisual {
 					tableros.add(tableroAux); //Lo define y añade
 					int tamanoSeparados=0; //Valor para descartar stats si se han realizado en el solver
 					for(int i=0;i<args.length;i++) { //Buscamos si nos han pedido stats
-						if(args[i].equals("--stats"))
+						if(args[i].equals("--stats")) {
 							tamanoSeparados=separados.length-6; //Si hay stats ignoramos las 6 últimas líneas
+							i=args.length+1;
+						}
 						else
 							tamanoSeparados=separados.length;
 					}
