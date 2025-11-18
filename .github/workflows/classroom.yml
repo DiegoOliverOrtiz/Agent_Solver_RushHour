@@ -191,7 +191,7 @@ jobs:
             "${{ steps.leer.outputs.command }}"
             "${{ steps.carpetas.outputs.test }}/files/t1_inputs.txt"
             "${{ steps.carpetas.outputs.test }}/files/t1_test.txt"
-          timeout: 10
+          timeout: 1
           max-score: 1
 
 
@@ -209,7 +209,7 @@ jobs:
             "${{ steps.leer.outputs.command }}"
             "${{ steps.carpetas.outputs.test }}/files/t2_inputs.txt"
             "${{ steps.carpetas.outputs.test }}/files/t2_test.txt"
-          timeout: 10
+          timeout: 1
           max-score: 1
 
   
@@ -227,7 +227,7 @@ jobs:
             "${{ steps.leer.outputs.command }}"
             "${{ steps.carpetas.outputs.test }}/files/t3_inputs.txt"
             "${{ steps.carpetas.outputs.test }}/files/t3_test.txt"
-          timeout: 10
+          timeout: 2
           max-score: 1
 
       - name: T4
