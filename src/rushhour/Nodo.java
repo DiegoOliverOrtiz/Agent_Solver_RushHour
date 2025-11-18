@@ -1,6 +1,25 @@
 package rushhour;
 
-public class Nodo implements Comparable<Nodo>{
+/* Descripción: 
+ * 	La clase Nodo representa los nodos que se usan para los algoritmos de búsqueda 
+ * 
+ * Atributos: 
+ * 	id: ID del nodo
+ * 	padre: ID del padre del nodo
+ * 	accion: es la acción que se toma para 
+ * 	estado: es el tablero de dicho nodo
+ * 	costo: coste para llegar a este nodo
+ * 	profundidad: profundidad a la que se encuentra el nodo
+ * 	heuristica: heuristica del nodo
+ * 	valor: valor en función del método que empleemos
+ * 
+ * Funciones:
+ * 	Constructor, getters y setter para cada valor.
+ * 	compareTo: comparador para ver que nodo debe ir en frente de la cola con prioridad de la frontera
+ * 	toString: representa todos los valores en una única cadena
+ * 
+ * */
+public class Nodo implements Comparable<Nodo>{ //Tenemos que poner el Comparable para que funcione compareTo
 	private int id;
 	private String padre;
 	private String accion;
@@ -10,8 +29,9 @@ public class Nodo implements Comparable<Nodo>{
 	private int heuristica;
 	private int valor;
 	
-	public Nodo() {
+	public Nodo() { //Constructor vacío para ciertos casos	
 	}
+	
 	public Nodo(int id, String padre, String accion, Tablero estado, int costo, int profundidad, int heuristica, int valor) {
 		this.id = id;
 		this.padre = padre;
@@ -40,7 +60,7 @@ public class Nodo implements Comparable<Nodo>{
 	}
 
 	@Override
-	public String toString() {
+	public String toString() { //Concatena todos los valores, para el estado toma la cadena que representa el tablero (semilla)
 		return "["+id + "," + padre + "," + accion + "," + estado.getSemilla() + "," + costo + "," + profundidad + "," + heuristica + "," + valor + "]";
 	}
 
@@ -92,9 +112,9 @@ public class Nodo implements Comparable<Nodo>{
 		this.valor = valor;
 	}
 
-	public int compareTo(Nodo otro) { //compareTo para UCS y en un futuro búsquedas informadas
-		int compararValores = Integer.compare(this.valor, otro.valor);
-		if(compararValores==0) {
+	public int compareTo(Nodo otro) { //compareTo para compara valores
+		int compararValores = Integer.compare(this.valor, otro.valor); //Primero toma el valor
+		if(compararValores==0) { //En caso de empate desempata por valor de ID
 			compararValores= Integer.compare(this.id, otro.id);
 		}
 		return compararValores;

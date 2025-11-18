@@ -100,6 +100,7 @@ public class ControlVisual {
 			//////
 			////// SUCCESSORS Y SOLVER
 			//////
+			
 			else if((args[0].equals("successors")&&args[1].equals("-s")&&args.length>2)||(args[0].equals("solver")&&args[1].equals("-s")&&args.length>3)) {
 				ControlTablero controlAux = new ControlTablero(); //Nuevo control
 				if(controlAux.verificarTablero(args[2])==0) { //Verificamos si la cadena original es válida
@@ -110,8 +111,10 @@ public class ControlVisual {
 					tableros.add(tableroAux); //Lo define y añade
 					int tamanoSeparados=0; //Valor para descartar stats si se han realizado en el solver
 					for(int i=0;i<args.length;i++) { //Buscamos si nos han pedido stats
-						if(args[i].equals("--stats"))
+						if(args[i].equals("--stats")) {
 							tamanoSeparados=separados.length-6; //Si hay stats ignoramos las 6 últimas líneas
+							i=args.length+1;
+						}
 						else
 							tamanoSeparados=separados.length;
 					}
@@ -276,7 +279,7 @@ public class ControlVisual {
             		if(vehiculos.get(k).getNombre()==tablero.getValorMatriz(i, j)) { //...El de la posición del tablero actual, en caso afirmativo rompemos el bucle y guardamos sus datos
             			etiqueta=etiqueta+vehiculos.get(k).getNombre();
             			colorCoche=vehiculos.get(k).getColorVehiculo();
-            			if(vehiculos.get(k).getNombre()=='A') { //condiciones especificas para el coche rojo
+            			if(vehiculos.get(k).getNombre()=='A') { //Condiciones especificas para el coche rojo
             				colorFuente=Color.BLACK;
             				colorCoche=Color.RED;
             			}
@@ -284,7 +287,7 @@ public class ControlVisual {
             		}
             	}
                 if((i==2&&j==5)&&tablero.getValorMatriz(i, j)=='o') { //Para ver donde está la meta
-            		etiqueta=etiqueta+"META";
+            		etiqueta=etiqueta+"META"; //Le ponemos una etiqueta manualmente
             		colorFuente=Color.RED;
             	}
                 JLabel celda = new JLabel(etiqueta, SwingConstants.CENTER); //Creamos una etiqueta para representar cada celda de la matriz
@@ -295,7 +298,7 @@ public class ControlVisual {
                 panelVehiculos.add(celda);   //Por último añadimos la celda creada al panel de los coches 
             }
         }
-		panelVehiculos.revalidate();
+		panelVehiculos.revalidate(); //Esto sirve para repintarlo
 	    panelVehiculos.repaint();
 	}
 	

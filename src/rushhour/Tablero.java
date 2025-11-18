@@ -151,4 +151,5 @@ public class Tablero {
 			vehiculos.get(i).definirOrientacion(); //Hace el llamamiento al método de la clase vehíclo para que se asignen ellos la orientación
 		}
 	}
+	
 }
