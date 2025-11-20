@@ -16,6 +16,16 @@ jobs:
     if: github.actor != 'github-classroom[bot]'
     steps:
 
+       # 🚫 NUEVO PASO AÑADIDO PARA BLOQUEAR REEJECUCIONES
+      - name: 🚫 Bloquear Reejecución
+        run: |
+          echo "Intento de Ejecución: $GITHUB_RUN_ATTEMPT"
+          if [ "$GITHUB_RUN_ATTEMPT" -gt 1 ]; then
+            echo "🚨 ¡ERROR! Esta es una reejecución ('Rerun'). Se anula la ejecución de este job."
+            exit 1  # Provoca que el job falle inmediatamente
+          fi
+          echo "✅ Primera ejecución. Continuamos."
+          
       - name: Checkout alumno
         uses: actions/checkout@v4
 
@@ -191,7 +201,7 @@ jobs:
             "${{ steps.leer.outputs.command }}"
             "${{ steps.carpetas.outputs.test }}/files/t1_inputs.txt"
             "${{ steps.carpetas.outputs.test }}/files/t1_test.txt"
-          timeout: 10
+          timeout: 1
           max-score: 1
 
 
@@ -209,7 +219,7 @@ jobs:
             "${{ steps.leer.outputs.command }}"
             "${{ steps.carpetas.outputs.test }}/files/t2_inputs.txt"
             "${{ steps.carpetas.outputs.test }}/files/t2_test.txt"
-          timeout: 10
+          timeout: 1
           max-score: 1
 
   
@@ -227,7 +237,7 @@ jobs:
             "${{ steps.leer.outputs.command }}"
             "${{ steps.carpetas.outputs.test }}/files/t3_inputs.txt"
             "${{ steps.carpetas.outputs.test }}/files/t3_test.txt"
-          timeout: 10
+          timeout: 2
           max-score: 1
 
       - name: T4
