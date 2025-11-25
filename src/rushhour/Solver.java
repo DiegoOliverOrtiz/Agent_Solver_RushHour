@@ -34,17 +34,19 @@ public class Solver {
 		int profundidadMaxima=-1; //Inicializada a -1 como simbolo de que no tenemos un valor válido por parte del usuario
 		boolean argsInvalidos=false; //Declaramos esta variable por si nos encontramos con argumentos invalidos
 		boolean argsProfValidaDFS=true; //Variable para inficar si tenemos una profundidad invalida para DFS
+		boolean argsHeuristicaValida=true;
+		int heuristica=-1;
 		int verificarTableroInicial=control.verificarTablero(args[2]);  //Pero primero vemos si nos han pasado un tablero legal
 		if(verificarTableroInicial==0&&args.length>4) { //Si lo es y tenemos los suficientes argumentos para que pueda estar --strategy y --<ESTRATEGIA> los buscamos
 			for(int i=3;i<args.length;i++) { //Empezamos en 3 porque del 0 al 2 son bien conocidos, mientras que el resto puede ir en caulquier orden
 				if(args[i].equals("--strategy")&&args.length>i) { //Buscamos strategy
 					if(estrategia.equals("No_Valida")) { //Si no hemos encontrado ninguna estrategia
 						//Miramos si es alguna de las válidas o si no lo es
-						if(args[i+1].equals("BFS")||args[i+1].equals("bfs")||args[i+1].equals("DFS")||args[i+1].equals("dfs")||args[i+1].equals("UCS")||args[i+1].equals("ucs")) {
+						if(args[i+1].equals("BFS")||args[i+1].equals("bfs")||args[i+1].equals("DFS")||args[i+1].equals("dfs")||args[i+1].equals("UCS")||args[i+1].equals("ucs")||args[i+1].equals("GBF")||args[i+1].equals("gbf")||args[i+1].equals("AStar")||args[i+1].equals("ASTAR")) {
 							estrategia=args[i+1]; //Si lo es la guardamos
 						}
 						else { //En caso contrario de que sea una estrategia no reconocida, 
-							resultado="Estrategia: "+args[i+1]+" no permitida, prueba con: BFS, DFS o UCS";
+							resultado="Estrategia: "+args[i+1]+" no permitida, prueba con: BFS, DFS, UCS, GBF, AStar";
 							argsInvalidos=true;
 						}
 					}
@@ -72,6 +74,25 @@ public class Solver {
 						argsProfValidaDFS=false;
 					}
 				}
+				else if(args[i].equals("--heuristic")&&args.length>i) { //Buscamos heuristic
+					if(heuristica==-1) { //Si tenemos una profundidad exacta de -1 (valor por defecto, nada introducido)
+						try {
+							heuristica=Integer.parseInt(args[i+1]); //Intentamos coger el posible valor de profundidad
+							if(heuristica<0||heuristica>2) { //Si es negativo damos error
+								resultado="La heuristica introducida es inválida, solo puede ser un valor entre: 0, 1 y 2";
+								argsHeuristicaValida=false;
+							}
+						}
+						catch (NumberFormatException e){ //Excepción por si nos meten algo que no sea un número
+							resultado="Valor incorrecto para --heuristic, asegurese de que sea: --heuristic <heuristicaComoNumero>";
+							argsHeuristicaValida=false;
+						}
+					}
+					else { //Mensaje especial de error por si nos meten varias profundidades
+						resultado="Conflicto en la profundidad, dos profundidades introducidas: Profundidad 1="+profundidadMaxima+" ~ Profundidad 2="+args[i+1];
+						argsHeuristicaValida=false;
+					}
+				}
 				else if(args[i].equals("--stats")) { //Buscamos stats
 					activarStats=true;
 				} //No hay else, si hay parametros paja, los ignoramos
@@ -80,10 +101,12 @@ public class Solver {
 			if(argsInvalidos==false&&!estrategia.equals("No_Valida")) { //Si no nos han metido mal los args y tenemos una estrategia valida
 				estrategia=estrategia.toLowerCase(); //Ya que permitimos que la estrategia vaya en minusculas lo pasamos todo a minusculas para hacer más sencilla las lógicas
 				//Nos aseguramos también que para DFS tengamos bien la profundidad correcta
-				if(((estrategia.equals("dfs"))&&argsProfValidaDFS&&profundidadMaxima>-1)||(!estrategia.equals("dfs"))) { //Si todo esta correcto realizamos la bysqueda
+				if(((estrategia.equals("dfs"))&&argsProfValidaDFS&&profundidadMaxima>-1)||((estrategia.equals("gbf")||estrategia.equals("astar"))&&argsHeuristicaValida&&(heuristica>=0&&heuristica<=3))||(!estrategia.equals("dfs")||!estrategia.equals("gbf")||!estrategia.equals("astar"))) { //Si todo esta correcto realizamos la bysqueda
 					resultado=resolucion(args[2], activarStats, estrategia, profundidadMaxima);
 				}
-				else if(resultado.equals("")) //Si no tenemos mensaje de error todavía en este punto es que no nos han metido profundidad
+				else if(resultado.equals("")&&estrategia.equals("dfs")) //Si no tenemos mensaje de error y tenemos DFS todavía en este punto es que no nos han metido profundidad
+					resultado="Parametros insuficientes para --strategy DFS, se debe incluir la profundidad como: --strategy DFS --depth <valor-profundidad> [--stats]";
+				else if(resultado.equals("")&&(estrategia.equals("gbf")||estrategia.equals("astar"))) //Si no tenemos mensaje de error y tenemos voraz o A* todavía en este punto es que no nos han metido heuristica
 					resultado="Parametros insuficientes para --strategy DFS, se debe incluir la profundidad como: --strategy DFS --depth <valor-profundidad> [--stats]";
 			}	
 			else if(resultado.equals("")) //Si no tenemos mensaje de error todavía en este punto damos un mensaje genérico
