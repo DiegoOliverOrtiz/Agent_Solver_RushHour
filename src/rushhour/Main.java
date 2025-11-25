@@ -1,9 +1,7 @@
-package rushhour; //v0.4.1
+package rushhour; //v0.4.3
 /* TO DO:
- * No añadir el nodo final a la lista cerrada -> Implica cambiar la llamada al método que devuelve el camino solución y guardar de alguna forma el nodo
- * Cambiar de public a private todos los métodos que solo se llamen de forma interna
  * Optimizar la poda implementando un HashMap
- * Comentar el código -> Pendiente de comentar: metodo que calcula la heuristica, futuro hashmap
+ * Comentar el código -> Pendiente de comentar: futuro hashmap
  */
 
 
@@ -87,7 +85,7 @@ public class Main {
 	 * hacer al usuario consciente de la existencia de la opción del visual,
 	 * limitada ahora a una activación por línea de comandos para evitar conflictos con los tests automáticos 
 	 * */
-	public static String cadenaManual() {
+	private static String cadenaManual() {
 		String manual="\n";
 		manual=manual+"--------------- BIENVENIDO AL MANUAL DE AYUDA ---------------\n";
 		manual=manual+"\n";

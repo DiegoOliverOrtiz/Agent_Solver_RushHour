@@ -20,7 +20,7 @@ import javax.swing.*;
 public class ControlVisual {
 	//Al constructor le pasamos solo el tablero de nuestro juego
 	private Color[] listaColores = new Color[36]; //36 por si nos meten coches de uno (por verify)
-	int iteracion=0; //Iteración para navegar entre los posibles estados
+	private int iteracion=0; //Iteración para navegar entre los posibles estados
 	
 	public ControlVisual() {
 		for(int  i=0;i<listaColores.length;i++) { //Para cada color genera un número entre el 0 y el 255 (valor máximo del rgb)

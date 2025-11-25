@@ -14,8 +14,7 @@ import java.util.*; //
  * 	resolucion: es el algoritmo de búsqueda como tal, es universal para todos los algoritmos de búsqueda
  * 	devolverSolucion: devuelve el camino solución, busca desde el nodo solución al nodo inicial y lo organiza para dar la salida esperada
  * 	generarNodoConEstrategia: genera un nodo con un valor específico en función de la búsqueda que estemos realizando
- * 	
- * 
+ * 	calcularHeuristica: realiza el cálculo para el valor de la heurística en función de la función heuristica seleccionada
  * */
 public class Solver {
 	private ControlTablero control = new ControlTablero();
@@ -122,7 +121,7 @@ public class Solver {
 	 * estrategia: string que nos indica la estrategia a realizar, profundidadPermitida: profundidad maxima para DFS
 	 * Retorno: un string con o la solución ordenada y los stats si se han activado
 	 * */	
-	public String resolucion(String semilla, boolean activarStats, String estrategia, int profundidadPermitida, int heuristicaUtilizar) {
+	private String resolucion(String semilla, boolean activarStats, String estrategia, int profundidadPermitida, int heuristicaUtilizar) {
 		//Definicion de variables
 		String solucion= "";
 		boolean solucionEncontrada=false; //Variable para ver si hemos encontrado la solución
@@ -145,7 +144,7 @@ public class Solver {
 		frontera.add(generarNodoConEstrategia(estrategia, id,"none", "___",tableroInicial,0,0,heuristica)); //Sin pasarle el valor, lo resuelve el metodo generarNodoConEstrategia
 		nodosGenerados++; //Incrementamos las stats de los nodosGenerados
 		
-		
+		Nodo nodoSolucion=new Nodo();
 		double tiempoInicio = System.nanoTime(); //El tiempo que tarda el algoritmo se toma antes del bucle según las instrucciones
 		while(solucionEncontrada==false&&frontera.size()>0) { //El búcle se realiza mientras no haya solución y sigamos teniendo nodos para analizar
 			Nodo nodoAnalizar = frontera.poll(); //Toma el primer nodo de la frontera (al ser cola con prioridad irán en el orden correspondiente de cada tipo de búsqueda)
@@ -171,7 +170,7 @@ public class Solver {
 				goal[3]="--goal";
 				if(control.preguntasTablero(goal).equals("TRUE")) { //Aprovechamos que tenemos creado goal en question, así que lo invocamos y miramos si es TRUE
 					solucionEncontrada=true; //Si lo es marcamos la solución como encontrada
-					listaCerrada.add(nodoAnalizar); //Lo añadimos a la lista cerrada para luego poder realizar el camino hasta el nodo inicial
+					nodoSolucion=nodoAnalizar; //Lo añadimos a la lista cerrada para luego poder realizar el camino hasta el nodo inicial
 				}
 				else if(estrategia.equals("dfs")&&nodoAnalizar.getProfundidad()>=profundidadPermitida) { //Si la estrategia es dfs vemos si podamos por produndidad
 					nodosPodados++; //Si lo hacemos actualizamos el contador
@@ -204,7 +203,7 @@ public class Solver {
 		}
 		tiempoEjecucion = (System.nanoTime()-tiempoInicio)/1000; //Finalizamos el conteo de tiempo y dividimos entre 1000 para que sea microsegundos
 		if(solucionEncontrada) { //Si hemos encontrado una solución
-			solucion=devolverSolucion(listaCerrada); //Llamamos a devolver solución para que nos busque el camino y lo organice
+			solucion=devolverSolucion(listaCerrada, nodoSolucion); //Llamamos a devolver solución para que nos busque el camino y lo organice
 			if(activarStats) { //Y si ha activado las stats las añadimos al final
 				solucion=solucion+"\n"+"ET: "+tiempoEjecucion+"\n"+"TN: "+nodosGenerados+"\n"+"EN: "+nodosExpandidos+"\n"+"CN: "+nodosPodados+"\n"+"DF: "+profundidadMaxima+"\n";
 			}
@@ -219,14 +218,14 @@ public class Solver {
 	
 	/* devolverSolucion nos devuelve de forma ordenada el camino de la solución, para conseguirlo toma el último nodo (solución)
 	 * toma su padre y realiza un for de atrás a adelante buscando nodos cuyo padre coincida (actualizando los padres) hasta terminar el for
-	 * Parametros: listaCerrada que contiene de forma asegurada: el nodo inicial, nodos intermedios cuya exploración daba en una potencial solución, nodo final
+	 * Parametros: listaCerrada que contiene de forma asegurada: el nodo inicial, nodos intermedios cuya exploración daba en una potencial solución, 
+	 * 			   nodoSolucion es el nodo solución de nuestro tablero
 	 * Retorno: un string con todo los ndososolucion
 	 * */	
-	public String devolverSolucion(ArrayList<Nodo> listaCerrada) {
-		String solucion= ""; //Solución vacia
-		Nodo nodoFinal = listaCerrada.get(listaCerrada.size()-1); //Tomamos el último nodo
-		solucion=nodoFinal.toString()+"\n"; //Lo ponemos en la solución con un salto de línea
-		String padre=nodoFinal.getPadre(); //Variable para guardar los padre
+	private String devolverSolucion(ArrayList<Nodo> listaCerrada, Nodo nodoSolucion) {
+		String solucion= ""; //Solución vacia 
+		solucion=nodoSolucion.toString()+"\n"; //Tomamos el último nodo y lo ponemos en la solución con un salto de línea
+		String padre=nodoSolucion.getPadre(); //Variable para guardar los padre
 		for(int i=0;i<listaCerrada.size();i++) { //Recorremos toda la lista cerrada 
 			int posicionAnalizar = (listaCerrada.size()-1)-i; //Tomamos los nodos de atrás a adelante para poder así encontrar a su padre (su padre estará en la lista antes que él)
 			Nodo nodoAnalizar = listaCerrada.get(posicionAnalizar); //Tomamos el nodo en la posición correcta
@@ -247,26 +246,38 @@ public class Solver {
 		return solucion;
 	}
 	
-	public int calcularHeuristica(int heuristicaUtilizar, Tablero tableroAnalizar) {
+	/* calcularHeuristica se encarga dde calcular el valor de la heurística para un nodo, en función de la función heuristica seleccionada:
+	 * FUNCIONES:
+	 * 0: cantidad de casillas a la derecha del coche rojo
+	 * 1: cantidad de vehículos a la derecha del coche rojo
+	 * 2: suma de las heurísticas 1 y 2
+	 * Primero el método toma la posición más a la derecha del coche rojo, es útil para ambos métodos
+	 * Y si es heurística 0 o 2 resta 5 - esa posición dando así el nº de casillas a la derecha
+	 * Y si es heurística 1 o 2 aprovecha la función what implementada en el hito 1 para ver que hay en la casilla de la derecha
+	 * si es un espacio en blanco "o" lo ignora y si es un vehículo (no "o") suma 1, no tiene en cuenta duplicados porque si hay
+	 * un duplicado es porque tenemos un coche en horizontal en la fila del coche rojo y a su derecha y por tanto el tablero
+	 * es irresoluble dando igual la heuristica
+	 * */
+	private int calcularHeuristica(int heuristicaUtilizar, Tablero tableroAnalizar) {
 		int heuristica=0;
 		//Nos interesa saber para ambas heuristicas donde "termina el coche A"
-		int posicionCoheAenLista=control.buscarVehiculo('A', tableroAnalizar);
-		ArrayList<int[]> coordenadas=tableroAnalizar.getVehiculos().get(posicionCoheAenLista).getCoordenadas();
-		int columna=coordenadas.get(1)[1]; //Tomamos la columna del extremo de más a la derecha
+		int posicionCoheAenLista=control.buscarVehiculo('A', tableroAnalizar); //Tomamos la posición en la lista del coche A
+		ArrayList<int[]> coordenadasCocheA=tableroAnalizar.getVehiculos().get(posicionCoheAenLista).getCoordenadas(); //Tomamos sus coordenadas
+		int columna=coordenadasCocheA.get(1)[1]; //Tomamos la columna del extremo de más a la derecha
 		
-		if(heuristicaUtilizar==0||heuristicaUtilizar==2) 
+		if(heuristicaUtilizar==0||heuristicaUtilizar==2) //Si la heurística es 0 o 2
 			heuristica=heuristica+(5-columna); //Vemos a cuanto está de la salida
-		if(heuristicaUtilizar==1||heuristicaUtilizar==2) {
-			int empezar=columna+1;
+		if(heuristicaUtilizar==1||heuristicaUtilizar==2) { //Si la heurística es 1 o 2, if separados para que si es 2 la heurisitca a utilizar acceda a ambos ifs
+			int empezar=columna+1; //Empezamos a buscar en la columna posterior al final del coche rojo
 			String[] what = new String[5]; //Gestionamos los parametros para ver si es objetivos
 			what[0]="question";
 			what[1]="-s";
 			what[2]=tableroAnalizar.getSemilla();
 			what[3]="--what";
-			for(int i=empezar;i<=5;i++) {
-				what[4]="2,"+i;
-				if(!control.preguntasTablero(what).equals("o"))
-					heuristica++;
+			for(int i=empezar;i<=5;i++) { //Vemos todas las posiciones a la derecha dl coche rojo
+				what[4]="2,"+i; //Coordenadas donde buscaremos, 2 es fijo porque es la fila del coche
+				if(!control.preguntasTablero(what).equals("o")) //Realizamos la consulta y miramos si no es un hueco vacío
+					heuristica++; //Si lo es aumentamos el contado en uno
 			}
 		}
 		return heuristica;
@@ -276,7 +287,7 @@ public class Solver {
 	 * Parametros: estrategia que estemos usando y todos los valores necesarios para generar un nodo
 	 * Retorno: nodo generado con la estrategia correcto
 	 * */
-	public Nodo generarNodoConEstrategia(String estrategia, int id, String idPadre, String accion, Tablero tableroSucesor, int coste, int profundidad, int heuristica) {
+	private Nodo generarNodoConEstrategia(String estrategia, int id, String idPadre, String accion, Tablero tableroSucesor, int coste, int profundidad, int heuristica) {
 		int valor=0; //Declaramos el valor
 		switch (estrategia) { //Hacemos un switch con la estrategia para definir el valor
 			case "bfs": //En minusculas porque lo ponemos en minusculas todo antes 
@@ -289,10 +300,10 @@ public class Solver {
 				valor=coste;//En UCS será el coste
 				break;
 			case "gbf":
-				valor=heuristica;
+				valor=heuristica; //En voraz será la heurística directamente
 				break;
 			case "astar":
-				valor=heuristica+coste;
+				valor=heuristica+coste; //En a-estrella será la suma del coste y la heurística
 				break;
 		}
 		Nodo nodoGenerado = new Nodo(id,idPadre, accion, tableroSucesor, coste, profundidad, heuristica, valor); //Generamos el nodo y lo devolvemos
