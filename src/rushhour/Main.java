@@ -1,4 +1,4 @@
-package rushhour; //v0.3.4
+package rushhour; //v0.4.1
 
 /* Descripción: 
  * 	Clase principal del programa
@@ -156,6 +156,17 @@ public class Main {
 		manual=manual+"\n";
 		manual=manual+"\t--strategy UCS\n";
 		manual=manual+"\tFunción: resuelve el tablero por búsqueda de coste uniforme, ejemplo: solver -s <cadena> --strategy UCS\n";
+		manual=manual+"\n";
+		manual=manual+"\t--strategy GBF --heuristic <heurísticaValida>\n";
+		manual=manual+"\tFunción: resuelve el tablero por búsqueda con heurística voraz, ejemplo: solver -s <cadena> --strategy GBF --heuristic 0\n";
+		manual=manual+"\n";
+		manual=manual+"\t--strategy AStar --heuristic <heuristicaValida>\n";
+		manual=manual+"\tFunción: resuelve el tablero por búsqueda con heurística de A-Estrella, ejemplo: solver -s <cadena> --strategy AStar --heuristic 0\n";
+		manual=manual+"\n";
+		manual=manual+"\tLa heurística debe tener los valores 0, 1 o 2 se calcula de la siguiente forma:\n";
+		manual=manual+"\t0: La heurística es igual al nº de casillas a la derecha del coche rojo.\n";
+		manual=manual+"\t1: La heurística es igual al nº de vehículos a la derecha del coche rojo.\n";
+		manual=manual+"\t2: Se aplica la heurística 0 y 1, siendo el valor total la suma de ambas.\n";
 		manual=manual+"\n";
 		manual=manual+"\tParametros adicionales: \n";
 		manual=manual+"\t\t--stats\n";
