@@ -1,6 +1,6 @@
 package rushhour;
 
-import java.util.*; //
+import java.util.*;
 
 /* Descripción: 
  * 	La clase Solver se encarga de realizar el algoritmo de búsqueda que intenta encontrar una solución a los niveles de rushhour
@@ -30,11 +30,11 @@ public class Solver {
 		String resultado=""; //Cadena que se devolverá
 		boolean activarStats=false; //boolean que nos determina si han marcado la opción --stats o no
 		String estrategia="No_Valida"; //Guardamos la estrategia como un string 
-		int profundidadMaxima=-1; //Inicializada a -1 como simbolo de que no tenemos un valor válido por parte del usuario
+		int profundidadMaxima=-1; //Inicializadas a -1 como simbolo de que no tenemos un valor válido por parte del usuario
+		int heuristica=-1; //
 		boolean argsInvalidos=false; //Declaramos esta variable por si nos encontramos con argumentos invalidos
 		boolean argsProfValidaDFS=true; //Variable para inficar si tenemos una profundidad invalida para DFS
-		boolean argsHeuristicaValida=true;
-		int heuristica=-1;
+		boolean argsHeuristicaValida=true; //Variable para inficar si tenemos una heurística inválida para búsquedas informadas
 		int verificarTableroInicial=control.verificarTablero(args[2]);  //Pero primero vemos si nos han pasado un tablero legal
 		if(verificarTableroInicial==0&&args.length>4) { //Si lo es y tenemos los suficientes argumentos para que pueda estar --strategy y --<ESTRATEGIA> los buscamos
 			for(int i=3;i<args.length;i++) { //Empezamos en 3 porque del 0 al 2 son bien conocidos, mientras que el resto puede ir en caulquier orden
@@ -132,6 +132,8 @@ public class Solver {
 		int profundidadMaxima=0;
 		PriorityQueue<Nodo> frontera = new PriorityQueue<>(); //Cola con prioridad para la frontera
 		ArrayList<Nodo> listaCerrada = new ArrayList<>(); //Lista para los nodos que hemos explorado
+		Map<String, Integer> mejorValorPorSemilla = new HashMap<>(); //Usamos un hashmap para guardar mejores valores y hacer eficiente la poda
+		//Los hashmaps guardan objetos por lo tanto no podemos usar un int convencional y debemos usar Integer
 		
 		//Primer nodo de todos
 		Tablero tableroInicial = new Tablero(semilla); //Creamos un tablero a partir de nuestra semilla inicial
@@ -149,17 +151,18 @@ public class Solver {
 		while(solucionEncontrada==false&&frontera.size()>0) { //El búcle se realiza mientras no haya solución y sigamos teniendo nodos para analizar
 			Nodo nodoAnalizar = frontera.poll(); //Toma el primer nodo de la frontera (al ser cola con prioridad irán en el orden correspondiente de cada tipo de búsqueda)
 			boolean podar = false; //variable para ver si podamos, inicializada a false (asumimos que no podamos)
-			for(int i=0;i<listaCerrada.size();i++) { //Para todos los elementos que hemos analizado
-				//Vemos si tenemos un nodo mejor que el que estamos analizando
-				if(nodoAnalizar.getEstado().getSemilla().equals(listaCerrada.get(i).getEstado().getSemilla())&&(Math.abs(nodoAnalizar.getValor())>=Math.abs(listaCerrada.get(i).getValor()))) { //Muy muy importante el valor absoluto porque dfs nos lo manda en negativo
-					podar=true; //Si es peor lo podamos y salimos del búcle, no necesitamos buscar más porque con uno peor ya sabemos que hemos explorado un camino mejor
-					i=listaCerrada.size()+1;
-				}
-				else if(nodoAnalizar.getEstado().getSemilla().equals(listaCerrada.get(i).getEstado().getSemilla())&&(Math.abs(nodoAnalizar.getValor())<Math.abs(listaCerrada.get(i).getValor())))
-					listaCerrada.remove(i); //Si encuentra un nodo peor elimina el nodo peor para optimizar el bucle, sigue en el búcle porque puede que haya un nodo mejor (y haya que podar) o incluso haya más nodos peores que podamos eliminar para optimizar
-				//Nos podemos permitir eliminarlos porque son nodos que no van a llegar a la solución nunca
-			}
-			
+			String semillaNodo = nodoAnalizar.getEstado().getSemilla();  //Tomamos la semilla del nodo actual
+			int valorNodo = Math.abs(nodoAnalizar.getValor()); //Tomamos su valor en valor absoluto porque para DFS está en negativo
+			Integer mejorValor = mejorValorPorSemilla.get(semillaNodo); //Tomamos el valor guardado a la semilla, ese valor que guardamos será el mejor 
+			if (mejorValor != null) { //Aquí también la importancia de que fuera Integer y no int, necesitamos ver si ya hemos visto esa semilla o no
+			    if (valorNodo >= mejorValor) //Si el valor del nodo es mayor o igual, lo podamos, es peor
+			        podar = true;
+			    else //En caso de ser mejor lo añadimos al hashmap
+			        mejorValorPorSemilla.put(semillaNodo, valorNodo);
+			} 
+			else //Si no existe ese nodo en el hashmap lo añade
+			    mejorValorPorSemilla.put(semillaNodo, valorNodo);
+
 			if(!podar) { //Si no hemos podado el nodo
 				Tablero tableroNodo = nodoAnalizar.getEstado(); //Creamos un tablero a partir del nodo
 				//VER SI ES SOLUCION

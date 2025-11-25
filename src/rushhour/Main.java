@@ -1,9 +1,4 @@
-package rushhour; //v0.4.3
-/* TO DO:
- * Optimizar la poda implementando un HashMap
- * Comentar el código -> Pendiente de comentar: futuro hashmap
- */
-
+package rushhour; //v1.0.0
 
 /* Descripción: 
  * 	Clase principal del programa
