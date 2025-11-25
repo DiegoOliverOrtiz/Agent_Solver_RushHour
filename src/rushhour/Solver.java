@@ -46,7 +46,7 @@ public class Solver {
 							estrategia=args[i+1]; //Si lo es la guardamos
 						}
 						else { //En caso contrario de que sea una estrategia no reconocida, 
-							resultado="Estrategia: "+args[i+1]+" no permitida, prueba con: BFS, DFS, UCS, GBF, AStar";
+							resultado="Estrategia: "+args[i+1]+" no permitida, prueba con: BFS, DFS, UCS, GBF o AStar";
 							argsInvalidos=true;
 						}
 					}
@@ -77,7 +77,7 @@ public class Solver {
 				else if(args[i].equals("--heuristic")&&args.length>i) { //Buscamos heuristic
 					if(heuristica==-1) { //Si tenemos una profundidad exacta de -1 (valor por defecto, nada introducido)
 						try {
-							heuristica=Integer.parseInt(args[i+1]); //Intentamos coger el posible valor de profundidad
+							heuristica=Integer.parseInt(args[i+1]); //Intentamos coger el posible valor de heuristica
 							if(heuristica<0||heuristica>2) { //Si es negativo damos error
 								resultado="La heuristica introducida es inválida, solo puede ser un valor entre: 0, 1 y 2";
 								argsHeuristicaValida=false;
@@ -88,7 +88,7 @@ public class Solver {
 							argsHeuristicaValida=false;
 						}
 					}
-					else { //Mensaje especial de error por si nos meten varias profundidades
+					else { //Mensaje especial de error por si nos meten varias heuristicas
 						resultado="Conflicto en la profundidad, dos profundidades introducidas: Profundidad 1="+profundidadMaxima+" ~ Profundidad 2="+args[i+1];
 						argsHeuristicaValida=false;
 					}
@@ -101,8 +101,8 @@ public class Solver {
 			if(argsInvalidos==false&&!estrategia.equals("No_Valida")) { //Si no nos han metido mal los args y tenemos una estrategia valida
 				estrategia=estrategia.toLowerCase(); //Ya que permitimos que la estrategia vaya en minusculas lo pasamos todo a minusculas para hacer más sencilla las lógicas
 				//Nos aseguramos también que para DFS tengamos bien la profundidad correcta
-				if(((estrategia.equals("dfs"))&&argsProfValidaDFS&&profundidadMaxima>-1)||((estrategia.equals("gbf")||estrategia.equals("astar"))&&argsHeuristicaValida&&(heuristica>=0&&heuristica<=3))||(!estrategia.equals("dfs")||!estrategia.equals("gbf")||!estrategia.equals("astar"))) { //Si todo esta correcto realizamos la bysqueda
-					resultado=resolucion(args[2], activarStats, estrategia, profundidadMaxima);
+				if(((estrategia.equals("dfs"))&&argsProfValidaDFS&&profundidadMaxima>-1)||((estrategia.equals("gbf")||estrategia.equals("astar"))&&argsHeuristicaValida&&(heuristica>=0&&heuristica<=2))||(!estrategia.equals("dfs")||!estrategia.equals("gbf")||!estrategia.equals("astar"))) { //Si todo esta correcto realizamos la bysqueda
+					resultado=resolucion(args[2], activarStats, estrategia, profundidadMaxima, heuristica);
 				}
 				else if(resultado.equals("")&&estrategia.equals("dfs")) //Si no tenemos mensaje de error y tenemos DFS todavía en este punto es que no nos han metido profundidad
 					resultado="Parametros insuficientes para --strategy DFS, se debe incluir la profundidad como: --strategy DFS --depth <valor-profundidad> [--stats]";
@@ -122,7 +122,7 @@ public class Solver {
 	 * estrategia: string que nos indica la estrategia a realizar, profundidadPermitida: profundidad maxima para DFS
 	 * Retorno: un string con o la solución ordenada y los stats si se han activado
 	 * */	
-	public String resolucion(String semilla, boolean activarStats, String estrategia, int profundidadPermitida) {
+	public String resolucion(String semilla, boolean activarStats, String estrategia, int profundidadPermitida, int heuristicaUtilizar) {
 		//Definicion de variables
 		String solucion= "";
 		boolean solucionEncontrada=false; //Variable para ver si hemos encontrado la solución
@@ -139,8 +139,13 @@ public class Solver {
 		tableroInicial.generarVehiculos(); //Lo inicializamos con todos sus vehiculos y orientaciones
 		tableroInicial.definirOrientacionVehiculosTablero();
 		int id=0; //Declaramos id (será usado más adelante), creamos el nodo y lo añadimos a la frontera
-		frontera.add(generarNodoConEstrategia(estrategia, id,"none", "___",tableroInicial,0,0,0)); //Sin pasarle el valor, lo resuelve el metodo generarNodoConEstrategia
+		int heuristica=0;
+		if(estrategia.equals("gbf")||estrategia.equals("astar"))
+			heuristica=calcularHeuristica(heuristicaUtilizar, tableroInicial);
+		frontera.add(generarNodoConEstrategia(estrategia, id,"none", "___",tableroInicial,0,0,heuristica)); //Sin pasarle el valor, lo resuelve el metodo generarNodoConEstrategia
 		nodosGenerados++; //Incrementamos las stats de los nodosGenerados
+		
+		
 		double tiempoInicio = System.nanoTime(); //El tiempo que tarda el algoritmo se toma antes del bucle según las instrucciones
 		while(solucionEncontrada==false&&frontera.size()>0) { //El búcle se realiza mientras no haya solución y sigamos teniendo nodos para analizar
 			Nodo nodoAnalizar = frontera.poll(); //Toma el primer nodo de la frontera (al ser cola con prioridad irán en el orden correspondiente de cada tipo de búsqueda)
@@ -182,7 +187,9 @@ public class Solver {
 						Tablero tableroSucesor = new Tablero(sucesoresSeparados[1]); //Generamos un tablero con la cadena resultante
 						tableroSucesor.generarVehiculos(); //Definimos sus vehiculos y orientaciones
 						tableroSucesor.definirOrientacionVehiculosTablero();
-						int heuristica=0; //Para la heuristica por ahora es 0, en un futuro llamará a una función que le asigne un valor
+						heuristica=0; //Para la heuristica por ahora es 0, en un futuro llamará a una función que le asigne un valor
+						if(estrategia.equals("gbf")||estrategia.equals("astar"))
+							heuristica=calcularHeuristica(heuristicaUtilizar, tableroSucesor);
 						id++; //Actualizamos el id
 						if(nodoAnalizar.getProfundidad()+1>profundidadMaxima) //Y actualizamos la profundidad maxima alcanzada si es mayor que la guardada hasta el momento
 							profundidadMaxima++;
@@ -240,6 +247,31 @@ public class Solver {
 		return solucion;
 	}
 	
+	public int calcularHeuristica(int heuristicaUtilizar, Tablero tableroAnalizar) {
+		int heuristica=0;
+		//Nos interesa saber para ambas heuristicas donde "termina el coche A"
+		int posicionCoheAenLista=control.buscarVehiculo('A', tableroAnalizar);
+		ArrayList<int[]> coordenadas=tableroAnalizar.getVehiculos().get(posicionCoheAenLista).getCoordenadas();
+		int columna=coordenadas.get(1)[1]; //Tomamos la columna del extremo de más a la derecha
+		
+		if(heuristicaUtilizar==0||heuristicaUtilizar==2) 
+			heuristica=heuristica+(5-columna); //Vemos a cuanto está de la salida
+		if(heuristicaUtilizar==1||heuristicaUtilizar==2) {
+			int empezar=columna+1;
+			String[] what = new String[5]; //Gestionamos los parametros para ver si es objetivos
+			what[0]="question";
+			what[1]="-s";
+			what[2]=tableroAnalizar.getSemilla();
+			what[3]="--what";
+			for(int i=empezar;i<=5;i++) {
+				what[4]="2,"+i;
+				if(!control.preguntasTablero(what).equals("o"))
+					heuristica++;
+			}
+		}
+		return heuristica;
+	}
+	
 	/* generarNodoConEstrategia nos devuelve un nodo con el valor concreto en función de la estrategia introducida
 	 * Parametros: estrategia que estemos usando y todos los valores necesarios para generar un nodo
 	 * Retorno: nodo generado con la estrategia correcto
@@ -255,6 +287,12 @@ public class Solver {
 				break;
 			case "ucs":
 				valor=coste;//En UCS será el coste
+				break;
+			case "gbf":
+				valor=heuristica;
+				break;
+			case "astar":
+				valor=heuristica+coste;
 				break;
 		}
 		Nodo nodoGenerado = new Nodo(id,idPadre, accion, tableroSucesor, coste, profundidad, heuristica, valor); //Generamos el nodo y lo devolvemos
