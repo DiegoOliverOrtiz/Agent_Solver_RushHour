@@ -140,7 +140,7 @@ public class Solver {
 		tableroInicial.definirOrientacionVehiculosTablero();
 		int id=0; //Declaramos id (será usado más adelante), creamos el nodo y lo añadimos a la frontera
 		int heuristica=0;
-		if(estrategia.equals("gbf")||estrategia.equals("astar"))
+		if(estrategia.equals("gbf")||estrategia.equals("astar")) //Solo aplicamos la heuristica si usamos una búsqueda informada
 			heuristica=calcularHeuristica(heuristicaUtilizar, tableroInicial);
 		frontera.add(generarNodoConEstrategia(estrategia, id,"none", "___",tableroInicial,0,0,heuristica)); //Sin pasarle el valor, lo resuelve el metodo generarNodoConEstrategia
 		nodosGenerados++; //Incrementamos las stats de los nodosGenerados
@@ -188,7 +188,7 @@ public class Solver {
 						tableroSucesor.generarVehiculos(); //Definimos sus vehiculos y orientaciones
 						tableroSucesor.definirOrientacionVehiculosTablero();
 						heuristica=0; //Para la heuristica por ahora es 0, en un futuro llamará a una función que le asigne un valor
-						if(estrategia.equals("gbf")||estrategia.equals("astar"))
+						if(estrategia.equals("gbf")||estrategia.equals("astar")) //Solo aplicamos la heuristica si usamos una búsqueda informada
 							heuristica=calcularHeuristica(heuristicaUtilizar, tableroSucesor);
 						id++; //Actualizamos el id
 						if(nodoAnalizar.getProfundidad()+1>profundidadMaxima) //Y actualizamos la profundidad maxima alcanzada si es mayor que la guardada hasta el momento

@@ -1,4 +1,11 @@
 package rushhour; //v0.4.1
+/* TO DO:
+ * No añadir el nodo final a la lista cerrada -> Implica cambiar la llamada al método que devuelve el camino solución y guardar de alguna forma el nodo
+ * Cambiar de public a private todos los métodos que solo se llamen de forma interna
+ * Optimizar la poda implementando un HashMap
+ * Comentar el código -> Pendiente de comentar: metodo que calcula la heuristica, futuro hashmap
+ */
+
 
 /* Descripción: 
  * 	Clase principal del programa
