@@ -9,4 +9,4 @@ Se incluye de forma adicional un comando de ayuda con:
 java -jar rushhour.jar --help
 
 Se incluye una GUI activable poniendo siempre al FINAL de cada línea
-de comandos activable con --visual
+de comandos el comando: --visual

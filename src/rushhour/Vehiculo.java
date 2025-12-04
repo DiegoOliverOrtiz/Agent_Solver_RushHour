@@ -134,7 +134,7 @@ public class Vehiculo {
 					i=coordenadas.size()+1; //Salimos del bucle si es ilegal para optimizar las iteraciones
 				}
 			}
-			if(legal)
+			if(legal) //Si es legal actualiza las coordenadas del vehículo
 				coordenadas=coordenadasTemporales;
 		}
 		//Se hace lo mismo para el movimiento vertical, pero teniendo en cuenta las coordenadas a mover

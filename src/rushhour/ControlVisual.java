@@ -10,11 +10,17 @@ import javax.swing.*;
  * 	Clase para ver mediante una GUI el tablero del juego (para depurar)
  * 
  * Atributos: 
- * 	tablero[][]: guarda la información del tablero para representarla
+ * 	Color[] listaColores: lista con 36 colores para representar posibles vehículos, tiene 36 porque se puede usar con verify y ahí nos pueden meter 36 vehículos
+ * 	iteracion: variable que cuenta en que estado de los que le pasemos nos encontramos, sirve para navegar a través de estos
  * 
  * Funciones:
- * 	mostrarMatriz: Representa visualmente la matriz con los colores asignados a cada coche
- * 	generarColores: genera un array de colores aleatorios para asignar a cada coche
+ * 	ControlVisual: constructor que se encarga de generar los colores aleatorios a usar
+ * 	crearVisual: se encarga de ver si lo que le hemos pasado al objeto de esta clase es dibujable o no, en caso de no serlo controla el error
+ * 	en caso de serlo lo dibuja, si se trata de successors, move o solver muestra varias pantallas para ver varios posibles estados
+ * 	mostrarTablero: se encarga del generador del frame donde irán los elementos, los crea y los añade, se encarga además de realizar
+ * 	las llamadas al metodo que dibuja en sí los vehiculos con el estado concreto a dibujar
+ * 	generarPanelVehiculos: modifica el panel 6x6 creado en mostrar tablero vaciandolo y rellenandolo de etiquetas con colores y nombres
+ * 	que representan lo que hay en cada celda, realiza también las llamadas a función que repintan el tablero.
  * 
  * */
 public class ControlVisual {
@@ -37,7 +43,7 @@ public class ControlVisual {
 	}
 
 	/* crearVisual se encarga de ver si lo que le pasamos a la clase es dibujable (puede que nos llegue un mensaje de error)
-	 * luuego en función del método que el usuario haya elegido (verify, successors...) los representará de una forma u otra
+	 * luego en función del método que el usuario haya elegido (verify, successors...) los representará de una forma u otra
 	 * los metodos que solo generan una salida, como verify o question --goal por ejemplo solo representarán la semilla que pasemos
 	 * como parametro de entrada de la función a usar, mientras que métodso que dan múltiples soluciones como solver o successors
 	 * mostrarán todos los tableros que existen como salida (todos los sucesores o todo el camino solución del solver)

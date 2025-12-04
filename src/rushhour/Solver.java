@@ -117,7 +117,8 @@ public class Solver {
 	}
 
 	/* resolución hace el algoritmo de búsqueda para encontrar nuestra solución, el algoritmo es genérico por lo que sirve para cualquier estrategia
-	 * Parametros-> semilla: es el string inicial que representa nuestro primer tablero y por tanto nodo, activarStats: boolean que nos indica si al final añadiremos las estadisticas o no
+	 * Parametros-> 
+	 * semilla: es el string inicial que representa nuestro primer tablero y por tanto nodo, activarStats: boolean que nos indica si al final añadiremos las estadisticas o no
 	 * estrategia: string que nos indica la estrategia a realizar, profundidadPermitida: profundidad maxima para DFS
 	 * Retorno: un string con o la solución ordenada y los stats si se han activado
 	 * */	

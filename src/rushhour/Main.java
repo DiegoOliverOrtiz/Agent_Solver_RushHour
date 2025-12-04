@@ -1,4 +1,4 @@
-package rushhour; //v1.0.0
+package rushhour; //v1.0.1
 
 /* Descripción: 
  * 	Clase principal del programa
@@ -39,37 +39,55 @@ public class Main {
 				if(activarVisual)
 					visual.crearVisual(resultadoConsulta, args);
 			}
+			else if(args[0].equals("question")&&args[1].equals("-s")&&args.length<=3) { //Error de parametros insuficientes en question
+				System.out.println("Número de parámetros insuficientes para question, revisa el manual con java -jar rushhour.jar --help para comprobar los parametros.");
+			}
 			//////
 			////// SUCCESSORS
 			//////
-			else if(args[0].equals("successors")&&args[1].equals("-s")) {//Vemos si es successors y si lo es lo ejecuta
+			else if(args[0].equals("successors")&&args[1].equals("-s")&&args.length>2) {//Vemos si es successors y si lo es lo ejecuta
 				String resultadoConsulta=tablero.sucesoresTablero(args[2]);
 				System.out.println(resultadoConsulta);
 				if(activarVisual)
 					visual.crearVisual(resultadoConsulta, args);
 			}
-			
+			else if(args[0].equals("successors")&&args[1].equals("-s")&&args.length<=2) {
+				System.out.println("Número de parámetros insuficientes para successors, revisa el manual con java -jar rushhour.jar --help para comprobar los parametros.");
+			}
 			//////
 			////// SOLVER
 			//////
-			else if(args[0].equals("solver")&&args[1].equals("-s")) {
+			else if(args[0].equals("solver")&&args[1].equals("-s")&&args.length>4) {
 				Solver solucionador = new Solver();
 				String resultadoConsulta=solucionador.realizarBusqueda(args);
 				System.out.println(resultadoConsulta);
 				if(activarVisual)
 					visual.crearVisual(resultadoConsulta, args);
 			}
-			
+			else if(args[0].equals("solver")&&args[1].equals("-s")&&args.length<=4) {
+				System.out.println("Número de parámetros insuficientes para solver, revisa el manual con java -jar rushhour.jar --help para comprobar los parametros.");
+			}
+			//////
+			////// MANUAL
+			//////
+			else if(args[0].equalsIgnoreCase("--help")||args[0].equalsIgnoreCase("-help")||args[0].equalsIgnoreCase("help")||args[0].equalsIgnoreCase("--man")||args[0].equalsIgnoreCase("-man")||args[0].equalsIgnoreCase("man")) {
+				System.out.println(cadenaManual());
+			}
 			//////
 			////// ERRORES
 			//////
 			else //Si ninguna de las opciones es correcta mostramos un error 
 				System.out.println("Error en los parámetros, no se reconoce el comando: "+args[0]+" usa java -jar rushhour.jar --help para mirar los comandos.");
 		}
+		//////
+		////// MANUAL Y ERRORES
+		//////
 		else if(args.length>0) {
 			if(args[0].equalsIgnoreCase("--help")||args[0].equalsIgnoreCase("-help")||args[0].equalsIgnoreCase("help")||args[0].equalsIgnoreCase("--man")||args[0].equalsIgnoreCase("-man")||args[0].equalsIgnoreCase("man")) {
 				System.out.println(cadenaManual()); //El manual va en un método a parte para no saturar el menú
 			}
+			else
+				System.out.println("Error en los parámetros, número de parámetros insuficiente usa java -jar rushhour.jar --help para mirar los parametros.");
 		}
 		else //Mostramos error también si no hay parametros suficientes
 			System.out.println("Error en los parámetros, número de parámetros insuficiente usa java -jar rushhour.jar --help para mirar los parametros.");
