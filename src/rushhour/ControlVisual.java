@@ -296,7 +296,7 @@ public class ControlVisual {
             		etiqueta=etiqueta+"META"; //Le ponemos una etiqueta manualmente
             		colorFuente=Color.RED;
             	}
-                JLabel celda = new JLabel(etiqueta, SwingConstants.CENTER); //Creamos una etiqueta para representar cada celda de la matriz
+                JButton celda = new JButton(etiqueta); //Creamos una etiqueta para representar cada celda de la matriz
                 celda.setOpaque(true); //Lo poenmos opaco para que se vea el color
                 celda.setBackground(colorCoche); //Y ponemos el color de fondo
                 celda.setForeground(colorFuente); //El color de la etiqueta siempre a blanco
